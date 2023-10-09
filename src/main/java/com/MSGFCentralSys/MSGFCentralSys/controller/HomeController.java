@@ -1,41 +1,50 @@
 package com.MSGFCentralSys.MSGFCentralSys.controller;
 
-import com.MSGFCentralSys.MSGFCentralSys.services.AnalystService;
+import com.MSGFCentralSys.MSGFCentralSys.services.CamundaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RestController;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class HomeController {
-
-    private final AnalystService analystService;
-
+    private final CamundaService camundaService;
     @Autowired
-    public HomeController(AnalystService analystService) {
-        this.analystService = analystService;
+    public HomeController(CamundaService camundaService) {
+        this.camundaService = camundaService;
     }
 
-    @GetMapping({"/"})
+    @GetMapping({"/home","/"})
     public String mainView(Model model) {
         model.addAttribute("titulo","Welcome to the MsgFoundation's CREDIT REQUEST");
         return "init";
     }
 
-    @GetMapping({"/CreditAnalyst"})
-    public String CreditAnalystView(Model model) {
+    @GetMapping("/CreditAnalyst")
+    public String CreditAnalystView(Model model) throws IOException {
+        List<String> processIds = this.camundaService.getAllProcess();
 
-        String applicantData = this.analystService.getTasksForProcessDefinition();
-        List<String> application = new ArrayList<>();
+        // Crear una lista para almacenar información de variables de proceso
+        List<Map<String, Object>> processVariablesList = new ArrayList<>();
 
-        model.addAttribute("application",application);
-        model.addAttribute("titulo","Review Applications");
+        // Iterar a través de los processIds y obtener las variables para cada uno
+        for (String processId : processIds) {
+            Map<String, Object> processVariables = this.camundaService.getProcessVariablesById(processId);
+            processVariablesList.add(processVariables);
+        }
+        System.out.println(processVariablesList.toString());
+        // Agregar la lista de variables de proceso al modelo para pasarla a la vista
+        model.addAttribute("processIds", processIds);
+        model.addAttribute("processVariablesList", processVariablesList);
+
         return "views/CreditAnalyst";
     }
+
 
     @GetMapping({"/CreditCommitte"})
     public String CreditCommitteView(Model model) {

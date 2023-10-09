@@ -9,6 +9,6 @@ FROM openjdk:17-oracle
 
 WORKDIR /app
 COPY --from=MAVEN_BUILD /sources/target/MSGF-CentralSys*.jar /app/MSGF-CentralSys.jar
-EXPOSE 9001
+EXPOSE 9003
 
 CMD ["java", "-jar", "MSGF-CentralSys.jar"]
