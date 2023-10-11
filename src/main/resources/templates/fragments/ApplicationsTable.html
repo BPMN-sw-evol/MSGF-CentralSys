@@ -1,24 +1,40 @@
 <table class="table table-striped" id="creditTable">
     <thead>
     <tr class="text-center">
-        <th scope="col">Credit Cod</th>
-        <th scope="col">House Price</th>
-        <th scope="col">Quota Value</th>
-        <th scope="col">Request Date</th>
-        <th scope="col">Action</th>
+        <th>Instance Id</th>
+        <th>Couple's Names</th>
+        <th>Start Date</th>
+        <th>Action</th>
+
+<!--        Primera Version-->
+<!--        <th>Couple's Names</th>-->
+<!--        <th>Couple's savings</th>-->
+<!--        <th>House Prices</th>-->
+<!--        <th>Quota Value</th>-->
+<!--        <th>Action</th>-->
     </tr>
     </thead>
     <tbody>
-    <tr class="text-center">
-        <td><span></span></td>
-        <td><span></span></td>
-        <td></td>
-        <td></td>
-        <td>
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
-                Review Application
-            </button>
-        </td>
+
+    <tr class="text-center" th:each="processVariablesList, index : ${processVariablesList}">
+        <td th:text="${processIds[index.index]}"></td>
+        <td th:text="${processVariablesList['coupleName1']['value'] + ' y ' + processVariablesList['coupleName2']['value']}"></td>
+       
+        <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
+            Review Application
+        </button></td>
     </tr>
+
+<!--    Primera Version -->
+<!--    <tr class="text-center" th:each="processVariablesList, index : ${processVariablesList}">-->
+<!--        <td th:text="${processVariablesList['coupleName1']['value'] + ' y ' + processVariablesList['coupleName2']['value']}"></td>-->
+<!--        <td th:text="${processVariablesList['coupleSavings']['value'] }"></td>-->
+<!--        <td th:text="${processVariablesList['housePrices']['value']}"></td>-->
+<!--        <td th:text="${processVariablesList['quotaValue']['value'] }"></td>-->
+<!--        <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">-->
+<!--            Review Application-->
+<!--        </button></td>-->
+<!--        </td>-->
+<!--    </tr>-->
     </tbody>
 </table>

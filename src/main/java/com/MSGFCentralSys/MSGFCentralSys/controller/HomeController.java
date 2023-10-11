@@ -41,6 +41,7 @@ public class HomeController {
         // Agregar la lista de variables de proceso al modelo para pasarla a la vista
         model.addAttribute("processIds", processIds);
         model.addAttribute("processVariablesList", processVariablesList);
+        model.addAttribute("titulo","Analyze applications");
 
         return "views/CreditAnalyst";
     }
