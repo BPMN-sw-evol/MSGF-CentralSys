@@ -19,7 +19,7 @@
     <tr class="text-center" th:each="processVariablesList, index : ${processVariablesList}">
         <td th:text="${processIds[index.index]}"></td>
         <td th:text="${processVariablesList['coupleName1']['value'] + ' y ' + processVariablesList['coupleName2']['value']}"></td>
-       
+        <td th:text="${processVariablesList['creationDate']['value']}"></td>
         <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">
             Review Application
         </button></td>
