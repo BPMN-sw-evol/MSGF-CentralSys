@@ -17,27 +17,9 @@
                     <div class="card-title">
                         <h1 class="text-center text-primary" th:text="${titulo}"></h1>
                     </div>
-                </div>
-<!--                <div class="card-body card-text mt-3 d-flex align-items-center justify-content-center">-->
-<!--                    <div class="text-center">-->
-<!--                        <h1>You can view your credits requests here.</h1>-->
-<!--                        <h3>ID partner 1: 12</h3>-->
-<!--                        <h3>ID partner 2: 13</h3>-->
-<!--                        <br>-->
-<!--                        <button id="editCredit" type="button" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">-->
-<!--                            Edit Current Request-->
-<!--                        </button>-->
-<!--                    </div>-->
-
-<!--                </div>-->
-
                <div class="card-body">
                    <div th:replace="fragments/ApplicationsTable.html"></div>
                </div>
-
-<!--                <div class="text-center">-->
-<!--                    <button class="btn btn-danger">Confirmar solicitud</button>-->
-<!--                </div>-->
 
             </div>
         </div>
@@ -45,8 +27,8 @@
 </section>
 
 <th:block layout:fragment="page-scripts">
-    <script th:src="@{js/validationsFormCredits.js}"></script>
-    <script th:src="@{js/ListCredits.js}"></script>
+    <script th:src="@{js/validationsFields.js}"></script>
+    <script th:src="@{js/CreditAnalyst.js}"></script>
 </th:block>
 </body>
 </html>

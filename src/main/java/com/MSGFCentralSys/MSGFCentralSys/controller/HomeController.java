@@ -7,7 +7,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -21,23 +24,22 @@ public class HomeController {
 
     @GetMapping({"/home","/"})
     public String mainView(Model model) {
-        model.addAttribute("titulo","Welcome to the MsgFoundation's CREDIT REQUEST");
+        model.addAttribute("titulo","Welcome to the MsgFoundation's CENTRAL SYS");
         return "init";
     }
 
     @GetMapping("/CreditAnalyst")
     public String CreditAnalystView(Model model) throws IOException {
-        List<String> processIds = this.camundaService.getAllProcess();
-
+        List<String> processIds = this.camundaService.getAllProcessByAssignee("CreditAnalyst");
         // Crear una lista para almacenar información de variables de proceso
         List<Map<String, Object>> processVariablesList = new ArrayList<>();
 
-        // Iterar a través de los processIds y obtener las variables para cada uno
+        // Iterar a través de los processIds y obtener las variables para cada uno  
         for (String processId : processIds) {
             Map<String, Object> processVariables = this.camundaService.getProcessVariablesById(processId);
             processVariablesList.add(processVariables);
         }
-        System.out.println(processVariablesList.toString());
+
         // Agregar la lista de variables de proceso al modelo para pasarla a la vista
         model.addAttribute("processIds", processIds);
         model.addAttribute("processVariablesList", processVariablesList);
