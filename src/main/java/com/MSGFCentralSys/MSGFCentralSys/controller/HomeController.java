@@ -1,6 +1,6 @@
 package com.MSGFCentralSys.MSGFCentralSys.controller;
 
-import com.MSGFCentralSys.MSGFCentralSys.CreditRequestDTO;
+import com.MSGFCentralSys.MSGFCentralSys.DTO.CreditRequestDTO;
 import com.MSGFCentralSys.MSGFCentralSys.services.CamundaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -8,12 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
 
 @Controller
 public class HomeController {
@@ -54,7 +50,7 @@ public class HomeController {
 
     @GetMapping({"/CreditCommitte"})
     public String CreditCommitteView(Model model) throws IOException{
-        List<String> processIds = this.camundaService.getAllProcessByAssignee("CreditComitte");
+        List<String> processIds = this.camundaService.getAllProcessByAssignee("CreditCommitte");
         processVariablesList.clear();
 
         // Crear una lista para almacenar información de variables de proceso

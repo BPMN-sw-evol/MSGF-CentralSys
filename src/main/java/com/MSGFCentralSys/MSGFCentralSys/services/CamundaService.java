@@ -1,6 +1,6 @@
 package com.MSGFCentralSys.MSGFCentralSys.services;
 
-import com.MSGFCentralSys.MSGFCentralSys.CreditRequestDTO;
+import com.MSGFCentralSys.MSGFCentralSys.DTO.CreditRequestDTO;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,7 +12,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
 import java.util.*;
 
 @Service
@@ -217,7 +216,7 @@ public class CamundaService {
         }
     }
 
-    public String completeTask(String processId, String assignee, Boolean isValid) {
+    public String completeTask(String processId, String assignee, Boolean value, String variable) {
         // Obtener la información de la tarea a partir del Process ID
         Map<String, String> taskInfo =  getTaskInfoByProcessId(processId);
         if (taskInfo != null) {
@@ -231,9 +230,9 @@ public class CamundaService {
             // Crear la estructura que coincide con el formato de Postman
             Map<String, Object> variables = new HashMap<>();
             Map<String, Object> allFine = new HashMap<>();
-            allFine.put("value", isValid);
+            allFine.put("value", value);
             allFine.put("type", "Boolean");
-            variables.put("allFine", allFine);
+            variables.put(variable, allFine);
             requestBody.put("variables", variables);
             System.out.println("aqui estoy "+requestBody);
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
@@ -241,7 +240,6 @@ public class CamundaService {
             // Realizar la solicitud POST a Camunda
             String camundaUrl = "http://localhost:9000/engine-rest/task/" + taskId + "/complete";
             try {
-                System.out.println("entra a peticion");
                 // Realizar la solicitud POST a Camunda
                 ResponseEntity<Map> response = restTemplate.postForEntity(camundaUrl, requestEntity, Map.class);
                 System.out.println("esta es la peticion "+response.getStatusCodeValue());
