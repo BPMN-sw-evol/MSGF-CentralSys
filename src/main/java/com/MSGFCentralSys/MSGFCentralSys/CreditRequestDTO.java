@@ -12,5 +12,5 @@ public class CreditRequestDTO {
     private Long housePrices;
     private Long quotaValue;
     private Long coupleSavings;
-    private String status;
+    private String requestDate;
 }
