@@ -26,7 +26,7 @@ public class CamundaService {
     }
 
     public List<String> getAllProcessByAssignee(String assignee) throws IOException {
-        String CAMUNDA_API_URL = "http://localhost:9000/engine-rest/task?withoutTenantId=false&assignee="+assignee+"&includeAssignedTasks=false&assigned=false&unassigned=false&withoutDueDate=false&withCandidateGroups=false&withoutCandidateGroups=false&withCandidateUsers=false&withoutCandidateUsers=false&active=false&suspended=false&variableNamesIgnoreCase=false&variableValuesIgnoreCase=false&sortBy=created&sortOrder=asc";
+        String CAMUNDA_API_URL = "http://localhost:9000/engine-rest/task?withoutTenantId=false&assignee="+assignee+"&includeAssignedTasks=false&assigned=false&unassigned=false&withoutDueDate=false&withCandidateGroups=false&withoutCandidateGroups=false&withCandidateUsers=false&withoutCandidateUsers=false&active=false&suspended=false&variableNamesIgnoreCase=false&variableValuesIgnoreCase=false&sortBy=created&sortOrder=desc";
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(CAMUNDA_API_URL, String.class);
         //
 
@@ -220,28 +220,35 @@ public class CamundaService {
     public String completeTask(String processId, String assignee, Boolean isValid) {
         // Obtener la información de la tarea a partir del Process ID
         Map<String, String> taskInfo =  getTaskInfoByProcessId(processId);
-        System.out.println("1. "+processId+ " 2. "+assignee+" 3. "+ isValid);
         if (taskInfo != null) {
             // Extraer el Task ID de la información de la tarea
             String taskId = taskInfo.get("taskId");
             // Construir el cuerpo de la solicitud para Camunda
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            System.out.println("taskid"+taskId);
             // Crear el cuerpo de la solicitud
             Map<String, Object> requestBody = new HashMap<>();
-            requestBody.put("allFine", Map.of("value", isValid, "type", "Boolean"));
+            // Crear la estructura que coincide con el formato de Postman
+            Map<String, Object> variables = new HashMap<>();
+            Map<String, Object> allFine = new HashMap<>();
+            allFine.put("value", isValid);
+            allFine.put("type", "Boolean");
+            variables.put("allFine", allFine);
+            requestBody.put("variables", variables);
+            System.out.println("aqui estoy "+requestBody);
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
 
             // Realizar la solicitud POST a Camunda
             String camundaUrl = "http://localhost:9000/engine-rest/task/" + taskId + "/complete";
             try {
+                System.out.println("entra a peticion");
                 // Realizar la solicitud POST a Camunda
                 ResponseEntity<Map> response = restTemplate.postForEntity(camundaUrl, requestEntity, Map.class);
+                System.out.println("esta es la peticion "+response.getStatusCodeValue());
                 String taskId1 = getTaskIdByProcessId(processId);
                 setAssignee(taskId1,assignee);
 
-                return String.valueOf(response);
+                return null;
             } catch (HttpClientErrorException e) {
                 String errorMessage = e.getResponseBodyAsString();
                 System.err.println("Error en la solicitud a Camunda: " + errorMessage);

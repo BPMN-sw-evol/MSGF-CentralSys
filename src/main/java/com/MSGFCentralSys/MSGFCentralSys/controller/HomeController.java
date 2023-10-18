@@ -18,6 +18,8 @@ import java.util.Map;
 @Controller
 public class HomeController {
     private final CamundaService camundaService;
+    List<CreditRequestDTO> processVariablesList = new ArrayList<>();
+
     @Autowired
     public HomeController(CamundaService camundaService) {
         this.camundaService = camundaService;
@@ -32,9 +34,8 @@ public class HomeController {
     @GetMapping("/CreditAnalyst")
     public String CreditAnalystView(Model model) throws IOException {
         List<String> processIds = this.camundaService.getAllProcessByAssignee("CreditAnalyst");
-        // Crear una lista para almacenar información de variables de proceso
-        List<CreditRequestDTO> processVariablesList = new ArrayList<>();
-        // Iterar a través de los processIds y obtener las variables para cada uno  
+        processVariablesList.clear();
+        // Iterar a través de los processIds y obtener las variables para cada uno
         for (String processId : processIds) {
             CreditRequestDTO creditRequestDTO1 = this.camundaService.getProcessVariablesByIdNew(processId);
             System.out.println(creditRequestDTO1);
@@ -52,7 +53,22 @@ public class HomeController {
 
 
     @GetMapping({"/CreditCommitte"})
-    public String CreditCommitteView(Model model) {
+    public String CreditCommitteView(Model model) throws IOException{
+        List<String> processIds = this.camundaService.getAllProcessByAssignee("CreditComitte");
+        processVariablesList.clear();
+
+        // Crear una lista para almacenar información de variables de proceso
+        // Iterar a través de los processIds y obtener las variables para cada uno
+        for (String processId : processIds) {
+            CreditRequestDTO creditRequestDTO1 = this.camundaService.getProcessVariablesByIdNew(processId);
+            System.out.println(creditRequestDTO1);
+            processVariablesList.add(creditRequestDTO1);
+
+        }
+
+        // Agregar la lista de variables de proceso al modelo para pasarla a la vista
+        model.addAttribute("processIds", processIds);
+        model.addAttribute("processVariablesList", processVariablesList);
         model.addAttribute("titulo","Assess Applications");
         return "views/CreditCommitte";
     }

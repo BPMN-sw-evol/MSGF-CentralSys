@@ -17,6 +17,6 @@ public class ProcessController {
     @GetMapping("/complete")
     public String completeTask(@RequestParam(name = "taskId") String taskId, @RequestParam(name="assignee") String assignee, @RequestParam(name="isValid") Boolean isValid) {
         String resultado = this.camundaService.completeTask(taskId, assignee, isValid);
-        return "views/CreditAnalyst";
+        return "redirect:/CreditAnalyst";
     }
 }

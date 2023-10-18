@@ -20,6 +20,11 @@
         <td th:text="${processVariablesList.processId}"></td>
         <td th:text="${processVariablesList.coupleName1 + ' y ' + processVariablesList.coupleName2}"></td>
         <td th:text="${processVariablesList.requestDate}"></td>
+        <td style="display: none" th:text="${processVariablesList.marriageYears}"></td>
+        <td style="display: none" th:text="${processVariablesList.bothEmployees}"></td>
+        <td style="display: none" th:text="${processVariablesList.housePrices}"></td>
+        <td style="display: none" th:text="${processVariablesList.quotaValue}"></td>
+        <td style="display: none" th:text="${processVariablesList.coupleSavings}"></td>
         <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#application" onclick="fillFormFields(this)">
             Review Application
         </button></td>
@@ -33,7 +38,7 @@
                     <h5 class="modal-title">Application</h5>
                     <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="/complete" method="post">
+                <form action="/complete" method="get">
                     <div class="modal-body">
                         <div th:replace="fragments/ApplicationsWithoutFinancialForm.html"></div>
                     </div>
