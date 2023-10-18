@@ -1,4 +1,4 @@
-package com.MSGFCentralSys.MSGFCentralSys;
+package com.MSGFCentralSys.MSGFCentralSys.DTO;
 
 import lombok.Data;
 
