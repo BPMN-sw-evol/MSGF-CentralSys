@@ -1,0 +1,49 @@
+<div class="card-body d-flex">
+
+    <div class="card-header">
+        <div class="card-title">
+            <h1 class="text-center">Credit Information</h1>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="form-floating mb-3 p-1">
+            <input class="form-control" type="text" id="taskId"
+                   name="taskId"
+                   readonly>
+            <label for="taskId">process Id:</label>
+        </div>
+        <div class="form-floating mb-3 p-1">
+            <input class="form-control" type="text" id="CoupleName"
+                   name="CoupleName"
+                   readonly>
+            <label for="CoupleName">Couple's Names:</label>
+        </div>
+
+        <input id="assignee" type="hidden" name="assignee">
+        <input id="isValid" type="hidden" name="isValid">
+
+        <div class="form-floating mb-3 p-1">
+            <input class="form-control" type="text" id="StartDate"
+                   name="StarDate"
+                   readonly>
+            <label for="StartDate">Start Date:</label>
+        </div>
+        <div class="form-floating mb-3 p-1">
+            <input class="form-control" type="number" id="marriageYears"
+                   name="marriageYears"
+                   readonly>
+            <label for="marriageYears">Years of Marriage:</label>
+        </div>
+        <div class="form-floating mb-3 p-1">
+            <select class="form-select" id="bothEmployees" name="bothEmployees"
+                    onblur="validatebothEmployees(this)">
+                <option value="" disabled selected>Both are employed?</option>
+                <option value="Yes">Yes</option>
+                <option value="No">No</option>
+            </select>
+            <label for="bothEmployees">Both Employed:</label>
+        </div>
+
+    </div>
+
+</div>
