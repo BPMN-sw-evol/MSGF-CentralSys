@@ -17,9 +17,9 @@
     <tbody>
 
     <tr class="text-center" th:each="processVariablesList, index : ${processVariablesList}">
-        <td th:text="${processIds[index.index]}"></td>
-        <td th:text="${processVariablesList['coupleName1']['value'] + ' y ' + processVariablesList['coupleName2']['value']}"></td>
-        <td th:text="${processVariablesList['creationDate']['value']}"></td>
+        <td th:text="${processVariablesList.processId}"></td>
+        <td th:text="${processVariablesList.coupleName1 + ' y ' + processVariablesList.coupleName2}"></td>
+        <td th:text="${processVariablesList.requestDate}"></td>
         <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#application" onclick="fillFormFields(this)">
             Review Application
         </button></td>
@@ -33,7 +33,7 @@
                     <h5 class="modal-title">Application</h5>
                     <button type="button" class="btn-close" data-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <form action="/complete" method="get">
+                <form action="/complete" method="post">
                     <div class="modal-body">
                         <div th:replace="fragments/ApplicationsWithoutFinancialForm.html"></div>
                     </div>

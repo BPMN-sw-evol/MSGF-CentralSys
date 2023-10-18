@@ -31,6 +31,7 @@
         <div class="form-floating mb-3 p-1">
             <input class="form-control" type="number" id="marriageYears"
                    name="marriageYears"
+                   th:value="${processVariablesList[0].marriageYears}"
                    readonly>
             <label for="marriageYears">Years of Marriage:</label>
         </div>
@@ -38,10 +39,36 @@
             <select class="form-select" id="bothEmployees" name="bothEmployees"
                     onblur="validatebothEmployees(this)">
                 <option value="" disabled selected>Both are employed?</option>
-                <option value="Yes">Yes</option>
-                <option value="No">No</option>
+                <option value="Yes" th:selected="${processVariablesList != null and processVariablesList.size() > 0? processVariablesList[0].bothEmployees == true : true}">Yes</option>
+                <option value="No" th:selected="${processVariablesList != null and processVariablesList.size() > 0 ? processVariablesList[0].bothEmployees == false : false}">No</option>
             </select>
             <label for="bothEmployees">Both Employed:</label>
+        </div>
+
+        <div class="form-floating mb-3 p-1">
+            <input class="form-control" type="number" id="housePrices" min="0" step="100000"
+                   name="housePrices"
+                   placeholder="Enter house prices"
+                   oninput="updateCoupleSavingsMax()"
+                   th:value="${processVariablesList[0].housePrices}"
+                   readonly>
+            <label for="housePrices">House Prices:</label>
+        </div>
+        <div class="form-floating mb-3 p-1">
+            <input class="form-control" type="number" id="quotaValue" min="10000" step="10000"
+                   name="quotaValue"
+                   placeholder="Enter quota value"
+                   th:value="${processVariablesList[0].quotaValue}"
+                   readonly>
+            <label for="quotaValue">Quota Value:</label>
+        </div>
+        <div class="form-floating mb-3 p-1">
+            <input class="form-control" type="number" id="coupleSavings" min="0"
+                   name="coupleSavings"
+                   placeholder="Enter couple savings"
+                   th:value="${processVariablesList[0].coupleSavings}"
+                   readonly>
+            <label for="coupleSavings">Couple Savings:</label>
         </div>
 
     </div>
