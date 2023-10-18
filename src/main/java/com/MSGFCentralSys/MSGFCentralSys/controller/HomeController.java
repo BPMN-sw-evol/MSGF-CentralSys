@@ -1,5 +1,6 @@
 package com.MSGFCentralSys.MSGFCentralSys.controller;
 
+import com.MSGFCentralSys.MSGFCentralSys.CreditRequestDTO;
 import com.MSGFCentralSys.MSGFCentralSys.services.CamundaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -33,12 +34,17 @@ public class HomeController {
         List<String> processIds = this.camundaService.getAllProcessByAssignee("CreditAnalyst");
         // Crear una lista para almacenar información de variables de proceso
         List<Map<String, Object>> processVariablesList = new ArrayList<>();
-
+        List<CreditRequestDTO> processVaraiblesDTO = new ArrayList<>();
         // Iterar a través de los processIds y obtener las variables para cada uno  
         for (String processId : processIds) {
             Map<String, Object> processVariables = this.camundaService.getProcessVariablesById(processId);
+            CreditRequestDTO creditRequestDTO1 = this.camundaService.getProcessVariablesByIdNew(processId);
+            System.out.println(creditRequestDTO1);
+            processVaraiblesDTO.add(creditRequestDTO1);
             processVariablesList.add(processVariables);
         }
+
+
 
         // Agregar la lista de variables de proceso al modelo para pasarla a la vista
         model.addAttribute("processIds", processIds);

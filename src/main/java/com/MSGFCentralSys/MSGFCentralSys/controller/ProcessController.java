@@ -10,7 +10,6 @@ public class ProcessController {
 
     private final CamundaService camundaService;
 
-
     public ProcessController(CamundaService camundaService) {
         this.camundaService = camundaService;
     }
