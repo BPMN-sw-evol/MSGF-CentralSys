@@ -34,7 +34,6 @@ public class HomeController {
         // Iterar a través de los processIds y obtener las variables para cada uno
         for (String processId : processIds) {
             CreditRequestDTO creditRequestDTO1 = this.camundaService.getProcessVariablesByIdNew(processId);
-            System.out.println(creditRequestDTO1);
             processVariablesList.add(creditRequestDTO1);
 
         }
@@ -57,7 +56,6 @@ public class HomeController {
         // Iterar a través de los processIds y obtener las variables para cada uno
         for (String processId : processIds) {
             CreditRequestDTO creditRequestDTO1 = this.camundaService.getProcessVariablesByIdNew(processId);
-            System.out.println(creditRequestDTO1);
             processVariablesList.add(creditRequestDTO1);
 
         }

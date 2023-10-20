@@ -12,9 +12,6 @@ function fillFormFields(button) {
     var quotaValue = row.querySelector("td:nth-child(7)").textContent;
     var coupleSavings = row.querySelector("td:nth-child(8)").textContent;
 
-
-
-
     // Llenar los campos del formulario
     document.getElementById("taskId").value = taskId;
     document.getElementById("CoupleName").value = coupleName;
@@ -77,9 +74,30 @@ function fillFormFields(button) {
         approveButton.addEventListener("click", function (event) {
             event.preventDefault(); // Evitar que el formulario se envíe automáticamente
             document.getElementById("value").value = "true";
+
+            // Mostrar la alerta con un indicador de carga al inicio del envío del formulario
+            Swal.fire({
+                position: 'center',
+                icon: 'info',
+                title: 'sending response',
+                timerProgressBar: true,
+                showConfirmButton: false,
+                timer: 2500
+            }).then((result) => {
+                /* Read more about handling dismissals below */
+                if (result.dismiss === Swal.DismissReason.timer) {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'successful sending!',
+                        showConfirmButton: false,
+                    })
+                }
+            })
             // Enviar el formulario
             form.submit();
         });
+
 
         // Agregar un controlador de clic al botón de aprobación
         rejectedButton.addEventListener("click", function (event) {
@@ -87,6 +105,25 @@ function fillFormFields(button) {
             document.getElementById("value").value = "false";
             document.getElementById("assignee").value = "MarriedCouple";
 
+            // Mostrar la alerta con un indicador de carga al inicio del envío del formulario
+            Swal.fire({
+                position: 'center',
+                icon: 'info',
+                title: 'sending response',
+                timerProgressBar: true,
+                showConfirmButton: false,
+                timer: 2500
+            }).then((result) => {
+                /* Read more about handling dismissals below */
+                if (result.dismiss === Swal.DismissReason.timer) {
+                    Swal.fire({
+                        position: 'center',
+                        icon: 'success',
+                        title: 'successful sending!',
+                        showConfirmButton: false,
+                    })
+                }
+            })
             // Enviar el formulario
             form.submit();
         });
