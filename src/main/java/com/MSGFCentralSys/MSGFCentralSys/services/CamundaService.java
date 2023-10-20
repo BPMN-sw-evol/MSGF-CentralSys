@@ -244,9 +244,10 @@ public class CamundaService {
                 ResponseEntity<Map> response = restTemplate.postForEntity(camundaUrl, requestEntity, Map.class);
                 System.out.println("esta es la peticion "+response.getStatusCodeValue());
                 String taskId1 = getTaskIdByProcessId(processId);
-                setAssignee(taskId1,assignee);
-
-                return null;
+                if(taskId1!=null){
+                    setAssignee(taskId1,assignee);
+                }
+                return "";
             } catch (HttpClientErrorException e) {
                 String errorMessage = e.getResponseBodyAsString();
                 System.err.println("Error en la solicitud a Camunda: " + errorMessage);
