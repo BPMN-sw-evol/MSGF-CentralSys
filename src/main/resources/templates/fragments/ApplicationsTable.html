@@ -26,13 +26,14 @@
         <td style="display: none" th:text="${processVariablesList.quotaValue}"></td>
         <td style="display: none" th:text="${processVariablesList.coupleSavings}"></td>
         <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#application" onclick="fillFormFields(this)">
-            Review Application
+            <i class="fa-solid fa-magnifying-glass mx-1"></i>
+            <span>Review Application</span>
         </button></td>
     </tr>
 
     <div class="modal fade" id="application" tabindex="-1" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
-        <div class="modal-dialog modal-xl modal-dialog-centered modal-dialog-scrollable">
+        <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
                 <div class="modal-header text-center">
                     <h5 class="modal-title">Application</h5>
@@ -44,9 +45,13 @@
                     </div>
                     <div class="modal-footer d-flex justify-content-around">
                         <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#applicationRejected">
-                            Rejected
+                            <i class="fa-solid fa-circle-xmark mx-1"></i>
+                            <span>Rejected</span>
                         </button>
-                        <button  id="approveButton" type="submit" class="btn btn-success">Approve </button>
+                        <button  id="approveButton" type="submit" class="btn btn-success">
+                            <i class="fa-solid fa-circle-check mx-1"></i>
+                            <span>Approve</span>
+                        </button>
                     </div>
                 </form>
             </div>
@@ -73,9 +78,13 @@
                         <input id="value" type="hidden" name="value">
                     </div>
                     <div class="modal-footer d-flex justify-content-around">
-                        <button  type="submit" class="btn btn-danger" data-dismiss="modal">Cancel
+                        <button  type="submit" class="btn btn-danger" data-dismiss="modal">
+                            <i class="fa-solid fa-circle-xmark mx-1"></i>
+                            <span>Cancel</span>
                         </button>
-                        <button id="rejectedButton" type="submit" class="btn btn-success">Confirm
+                        <button id="rejectedButton" type="submit" class="btn btn-success">
+                            <i class="fa-solid fa-circle-check mx-1"></i>
+                            <span>Confirm</span>
                         </button>
                     </div>
                 </form>

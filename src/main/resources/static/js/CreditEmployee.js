@@ -18,6 +18,7 @@ function fillFormFields(button) {
     document.getElementById("requestDate").value = requestDate;
     document.getElementById("marriageYears").value = marriageYears;
     document.getElementById("bothEmployees").value = bothEmployees;
+    document.getElementById("bothEmployees").setAttribute("readonly", "readonly");
 
     // Obtener el contenedor del campo
     var housePricesContainer = document.getElementById("housePricesContainer");

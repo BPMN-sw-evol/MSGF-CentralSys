@@ -7,11 +7,10 @@
     <meta charset="UTF-8">
 </head>
 <body>
-
-<section class="nombreClass">
-    <div class="container-fluid" layout:fragment="views">
-        <h1 class="text-center text-primary" th:text="${titulo}"></h1>
-        <p>Welcome to our employees' Employeed Panel! We are delighted to assist you in the process
+<section class="dinamico">
+    <div class="h-100 d-flex align-items-center justify-content-center flex-column p-4" layout:fragment="views">
+        <h1 class="text-center text-primary mb-4" th:text="${titulo}"></h1>
+        <p class="mr-4 ms-4">Welcome to our employees' Employeed Panel! We are delighted to assist you in the process
             of obtaining the financing you need to take an important step in your lives together. On
             this platform, you can provide both your personal information and relevant details about
             your marriage and financial situation. Our goal is to provide you with a simple and
@@ -22,12 +21,5 @@
             your partner on this exciting journey. Let's get started!</p>
     </div>
 </section>
-
-<th:block layout:fragment="page-scripts">
-    <script>
-
-    </script>
-</th:block>
-
 </body>
 </html>

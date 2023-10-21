@@ -7,11 +7,11 @@
     src: url("../fonts/OpenSans-CondLight.ttf"), url("../fonts/OpenSans-CondLight.eot"), url("../fonts/OpenSans-CondLight.woff"), url("../fonts/OpenSans-CondLight.woff2"), url("../fonts/OpenSans-CondLight.svg");
 }
 html, body {
-    height: 100%;
+    height: 100vh;
     margin: 0;
     padding: 0;
     width: 100%;
-    font-size: 17px;
+    font-size: 18px;
     font-family: "Parrafos" !important;
     background-color: #eaeaea;
 }
@@ -28,6 +28,7 @@ html, body {
     padding: 0;
     width: 100%;
 }
+
 .material-input-disabled{ pointer-events: none;}
 ul.nav-tabs li a:focus{ outline: none; }
 .btn:focus, .btn:active{ outline: none !important; }

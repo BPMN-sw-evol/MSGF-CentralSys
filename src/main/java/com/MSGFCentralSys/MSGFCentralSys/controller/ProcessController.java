@@ -5,6 +5,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.io.IOException;
+
 @Controller
 public class ProcessController {
 
@@ -15,7 +17,7 @@ public class ProcessController {
     }
 
     @GetMapping("/completeCreditAnalyst")
-    public String completeTask(@RequestParam(name = "taskId") String taskId, @RequestParam(name="assignee") String assignee, @RequestParam(name="value") Boolean value, @RequestParam("variable") String variable) {
+    public String completeTask(@RequestParam(name = "taskId") String taskId, @RequestParam(name="assignee") String assignee, @RequestParam(name="value") Boolean value, @RequestParam("variable") String variable) throws IOException {
         String resultado = this.camundaService.completeTask(taskId, assignee, value, variable);
         return "redirect:/";
     }

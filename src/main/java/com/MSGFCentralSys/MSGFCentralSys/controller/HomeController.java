@@ -29,23 +29,23 @@ public class HomeController {
 
     @GetMapping("/CreditAnalyst")
     public String CreditAnalystView(Model model) throws IOException {
-        List<String> processIds = this.camundaService.getAllProcessByAssignee("CreditAnalyst");
-        processVariablesList.clear();
-        // Iterar a través de los processIds y obtener las variables para cada uno
-        for (String processId : processIds) {
-            CreditRequestDTO creditRequestDTO1 = this.camundaService.getProcessVariablesByIdNew(processId);
-            processVariablesList.add(creditRequestDTO1);
 
-        }
+            List<String> processIds = this.camundaService.getAllProcessByAssignee("CreditAnalyst");
+            processVariablesList.clear();
+            // Iterar a través de los processIds y obtener las variables para cada uno
+            for (String processId : processIds) {
+                CreditRequestDTO creditRequestDTO1 = this.camundaService.getProcessVariablesByIdNew(processId);
+                processVariablesList.add(creditRequestDTO1);
+            }
 
-        // Agregar la lista de variables de proceso al modelo para pasarla a la vista
-        model.addAttribute("processIds", processIds);
-        model.addAttribute("processVariablesList", processVariablesList);
-        model.addAttribute("titulo","Analyze applications");
+            // Agregar la lista de variables de proceso al modelo para pasarla a la vista
+            model.addAttribute("processIds", processIds);
+            model.addAttribute("processVariablesList", processVariablesList);
+            model.addAttribute("titulo", "Analyze applications");
 
-        return "views/CreditAnalyst";
+            return "views/CreditAnalyst";
+
     }
-
 
     @GetMapping({"/CreditCommitte"})
     public String CreditCommitteView(Model model) throws IOException{
@@ -76,4 +76,7 @@ public class HomeController {
         model.addAttribute("titulo","Welcome to the MsgFoundation's CREDIT REQUEST");
         return "views/Treasury";
     }
+
 }
+
+
