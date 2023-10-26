@@ -13,6 +13,10 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.*;
 
 @Service
@@ -167,15 +171,6 @@ public class CamundaService {
         }
     }
 
-    public String getTaskIdByProcessId(String processId) {
-        for (TaskInfo taskInfo : tasksList) {
-            if (taskInfo.getProcessId().equals(processId)) {
-                return taskInfo.getTaskId();
-            }
-        }
-        return null;
-    }
-
     public String getTaskIdByProcessIdWithApi(String processId) {
         String camundaUrl = "http://localhost:9000/engine-rest/task?processInstanceId=" + processId;
 
@@ -216,6 +211,7 @@ public class CamundaService {
 
     public String completeTask(String processId, String assignee, Boolean value, String variable) {
         // Obtener la información de la tarea a partir del Process ID
+        Connection connection;
         TaskInfo taskInfo = getTaskInfoByProcessId(processId);
         if (taskInfo != null) {
             // Extraer el Task ID de la información de la tarea
@@ -236,6 +232,12 @@ public class CamundaService {
             System.out.println("aqui estoy " + requestBody);
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
 
+            try {
+                  connection = DriverManager.getConnection("jdbc:postgresql://rds-msgf.cyrlczakjihy.us-east-1.rds.amazonaws.com:5432/credit_request", "postgres", "msgfoundation");
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+
             // Realizar la solicitud POST a Camunda
             String camundaUrl = "http://localhost:9000/engine-rest/task/" + taskId + "/complete";
             try {
@@ -245,6 +247,22 @@ public class CamundaService {
                 String taskId1 = getTaskIdByProcessIdWithApi(processId);
 
                 if (taskId1 != null) {
+                    // Validar si la variable "assignee" tiene el valor "marriedCouple"
+                    if ("MarriedCouple".equals(assignee)) {
+                        // Actualizar el valor "status" a "Draft" en la tabla "CreditRequest"
+                        String updateStatusQuery = "UPDATE credit_request SET status = 'DRAFT' WHERE process_id = ?";
+                        try (PreparedStatement statement = connection.prepareStatement(updateStatusQuery)) {
+                            statement.setString(1, processId);
+                            int rowsAffected = statement.executeUpdate();
+                            if (rowsAffected > 0) {
+                                // La actualización fue exitosa
+                            } else {
+                                // La actualización no afectó ninguna fila, lo que podría indicar que el "processId" no se encontró en la tabla.
+                            }
+                        } catch (SQLException e) {
+                            // Manejar excepciones de SQL, si es necesario.
+                        }
+                    }
                     updateTaskByProcessId(processId,taskId1);
                     setAssignee(taskId1, assignee);
                 }
