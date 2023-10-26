@@ -1,9 +1,9 @@
 version: '3'
 
 services:
-  prueba:
+  central-sys:
     build:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "9001:9001"
+      - "9003:9003"

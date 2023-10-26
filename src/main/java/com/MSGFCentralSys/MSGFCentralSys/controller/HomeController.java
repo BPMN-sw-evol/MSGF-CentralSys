@@ -32,7 +32,6 @@ public class HomeController {
     public String CreditAnalystView(Model model) throws IOException {
 
             List<String> processIds = this.camundaService.getAllProcessByAssignee("CreditAnalyst");
-            List<String> taskInfoList = new ArrayList<>();
             processVariablesList.clear();
             // Iterar a través de los processIds y obtener las variables para cada uno
             for (String processId : processIds) {
@@ -44,7 +43,6 @@ public class HomeController {
             }
 
             // Agregar la lista de variables de proceso al modelo para pasarla a la vista
-            model.addAttribute("processIds", processIds);
             model.addAttribute("processVariablesList", processVariablesList);
             model.addAttribute("titulo", "Analyze applications");
             return "views/CreditAnalyst";

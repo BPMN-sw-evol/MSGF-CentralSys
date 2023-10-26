@@ -5,12 +5,12 @@ function fillFormFields(button) {
     // Obtener los datos de la fila
     var taskId = row.querySelector("td:nth-child(1)").textContent;
     var coupleName = row.querySelector("td:nth-child(2)").textContent;
-    var requestDate = row.querySelector("td:nth-child(3)").textContent;
-    var marriageYears = row.querySelector("td:nth-child(4)").textContent;
-    var bothEmployees = row.querySelector("td:nth-child(5)").textContent;
-    var housePrices = row.querySelector("td:nth-child(6)").textContent;
-    var quotaValue = row.querySelector("td:nth-child(7)").textContent;
-    var coupleSavings = row.querySelector("td:nth-child(8)").textContent;
+    var requestDate = row.querySelector("td:nth-child(4)").textContent;
+    var marriageYears = row.querySelector("td:nth-child(5)").textContent;
+    var bothEmployees = row.querySelector("td:nth-child(6)").textContent;
+    var housePrices = row.querySelector("td:nth-child(7)").textContent;
+    var quotaValue = row.querySelector("td:nth-child(8)").textContent;
+    var coupleSavings = row.querySelector("td:nth-child(9)").textContent;
 
     // Llenar los campos del formulario
     document.getElementById("taskId").value = taskId;
@@ -27,7 +27,7 @@ function fillFormFields(button) {
 
 
     // Mostrar u ocultar el contenedor según el valor
-    if (housePrices === "0") {
+    if (housePrices ===  "0") {
         housePricesContainer.style.display = "none";
     } else {
         housePricesContainer.style.display = "block";

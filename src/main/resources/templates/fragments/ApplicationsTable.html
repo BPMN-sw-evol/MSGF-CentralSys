@@ -4,6 +4,7 @@
         <th>Instance Id</th>
         <th>Couple's Names</th>
         <th>Start Date</th>
+        <th>State</th>
         <th>Action</th>
 
 <!--        Primera Version-->
@@ -17,17 +18,18 @@
     <tbody>
 
     <tr class="text-center" th:each="processVariablesList, index : ${processVariablesList}">
-        <td th:text="${processVariablesList.processId}"></td>
+        <td th:text="${processVariablesList.TaskInfo.processId}"></td>
         <td th:text="${processVariablesList.coupleName1 + ' y ' + processVariablesList.coupleName2}"></td>
         <td th:text="${processVariablesList.requestDate}"></td>
+        <td style="overflow: hidden" th:text="${processVariablesList.TaskInfo.taskName}"></td>
         <td style="display: none" th:text="${processVariablesList.marriageYears}"></td>
         <td style="display: none" th:text="${processVariablesList.bothEmployees}"></td>
         <td style="display: none" th:text="${processVariablesList.housePrices}"></td>
         <td style="display: none" th:text="${processVariablesList.quotaValue}"></td>
         <td style="display: none" th:text="${processVariablesList.coupleSavings}"></td>
-        <td><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#application" onclick="fillFormFields(this)">
+        <td style="width: 20vh;"><button type="button" class="btn btn-primary" data-toggle="modal" data-target="#application" onclick="fillFormFields(this)">
             <i class="fa-solid fa-magnifying-glass mx-1"></i>
-            <span>Review Application</span>
+            <span>Review</span>
         </button></td>
     </tr>
 
@@ -49,8 +51,8 @@
                             <span>Rejected</span>
                         </button>
                         <button  id="approveButton" type="submit" class="btn btn-success">
-                            <i class="fa-solid fa-circle-check mx-1"></i>
-                            <span>Approve</span>
+                            <i class="fa-solid fa-circle-check mx-1">                            <span>Approve</span>
+                            </i>
                         </button>
                     </div>
                 </form>

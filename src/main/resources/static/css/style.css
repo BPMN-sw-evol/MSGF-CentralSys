@@ -29,6 +29,11 @@ html, body {
     width: 100%;
 }
 
+.card-header{
+    padding-left: 0;
+    padding-right: 0;
+}
+
 .material-input-disabled{ pointer-events: none;}
 ul.nav-tabs li a:focus{ outline: none; }
 .btn:focus, .btn:active{ outline: none !important; }
