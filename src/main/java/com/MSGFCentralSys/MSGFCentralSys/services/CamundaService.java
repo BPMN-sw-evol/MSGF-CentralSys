@@ -1,6 +1,7 @@
 package com.MSGFCentralSys.MSGFCentralSys.services;
 
-import com.MSGFCentralSys.MSGFCentralSys.DTO.CreditRequestDTO;
+import com.MSGFCentralSys.MSGFCentralSys.dto.CreditRequestDTO;
+import com.MSGFCentralSys.MSGFCentralSys.dto.TaskInfo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,13 +20,15 @@ public class CamundaService {
     private final RestTemplate restTemplate;
     @Value("${camunda.url.start}")
     private String camundaStartUrl;
+    private List<TaskInfo> tasksList = new ArrayList<>();
+
     @Autowired
     public CamundaService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
     public List<String> getAllProcessByAssignee(String assignee) throws IOException {
-        String CAMUNDA_API_URL = "http://localhost:9000/engine-rest/task?withoutTenantId=false&assignee="+assignee+"&includeAssignedTasks=false&assigned=false&unassigned=false&withoutDueDate=false&withCandidateGroups=false&withoutCandidateGroups=false&withCandidateUsers=false&withoutCandidateUsers=false&active=false&suspended=false&variableNamesIgnoreCase=false&variableValuesIgnoreCase=false&sortBy=created&sortOrder=desc";
+        String CAMUNDA_API_URL = "http://localhost:9000/engine-rest/task?withoutTenantId=false&assignee=" + assignee + "&includeAssignedTasks=false&assigned=false&unassigned=false&withoutDueDate=false&withCandidateGroups=false&withoutCandidateGroups=false&withCandidateUsers=false&withoutCandidateUsers=false&active=false&suspended=false&variableNamesIgnoreCase=false&variableValuesIgnoreCase=false&sortBy=created&sortOrder=desc";
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(CAMUNDA_API_URL, String.class);
         //
 
@@ -47,7 +50,7 @@ public class CamundaService {
         }
     }
 
-    public Map<String, Object> getProcessVariablesById(String processId) {
+    public CreditRequestDTO getProcessVariablesById(String processId) {
         String CAMUNDA_API_URL = "http://localhost:9000/engine-rest/";
         String camundaURL = CAMUNDA_API_URL + "process-instance/" + processId + "/variables?deserializeValues=true";
 
@@ -55,27 +58,8 @@ public class CamundaService {
                 camundaURL,
                 HttpMethod.GET,
                 null,
-                new ParameterizedTypeReference<Map<String, Object>>() {}
-        );
-
-        Map<String, Object> variablesMap = responseEntity.getBody();
-
-        if (variablesMap != null) {
-            return variablesMap;
-        } else {
-            return Collections.emptyMap(); // Devolver un mapa vacío si no se encontraron variables
-        }
-    }
-
-    public CreditRequestDTO getProcessVariablesByIdNew(String processId) {
-        String CAMUNDA_API_URL = "http://localhost:9000/engine-rest/";
-        String camundaURL = CAMUNDA_API_URL + "process-instance/" + processId + "/variables?deserializeValues=true";
-
-        ResponseEntity<Map<String, Object>> responseEntity = restTemplate.exchange(
-                camundaURL,
-                HttpMethod.GET,
-                null,
-                new ParameterizedTypeReference<Map<String, Object>>() {}
+                new ParameterizedTypeReference<Map<String, Object>>() {
+                }
         );
 
         Map<String, Object> variablesMap = responseEntity.getBody();
@@ -141,24 +125,36 @@ public class CamundaService {
         }
     }
 
-    public Map<String, String> getTaskInfoByProcessId(String processId) {
+    public TaskInfo getTaskInfoByProcessId(String processId) {
         // Construir la URL para consultar las tareas relacionadas con el proceso
-        String camundaUrl = "http://loca" +
-                "lhost:9000/engine-rest/task?processInstanceId=" + processId;
+        String camundaUrl = "http://localhost:9000/engine-rest/task?processInstanceId=" + processId;
 
         try {
             // Realizar una solicitud GET a Camunda para obtener la lista de tareas
-            ResponseEntity<List<Map>> response = restTemplate.exchange(camundaUrl, HttpMethod.GET, null, new ParameterizedTypeReference<List<Map>>() {});
+            ResponseEntity<List<Map>> response = restTemplate.exchange(camundaUrl, HttpMethod.GET, null, new ParameterizedTypeReference<List<Map>>() {
+            });
 
             // Verificar si la respuesta contiene tareas
             List<Map> tasks = response.getBody();
             if (tasks != null && !tasks.isEmpty()) {
                 // Supongamos que tomamos la primera tarea encontrada
-                Map<String, String> taskInfo = new HashMap<>();
-                taskInfo.put("taskId", String.valueOf(tasks.get(0).get("id")));
-                taskInfo.put("taskName", String.valueOf(tasks.get(0).get("name")));
-                //taskInfo.put("assignee", String.valueOf(tasks.get(0).get("assignee")));
+                Map<String, String> taskInfoMap = new HashMap<>();
+                taskInfoMap.put("taskId", String.valueOf(tasks.get(0).get("id")));
+                taskInfoMap.put("taskName", String.valueOf(tasks.get(0).get("name")));
+                taskInfoMap.put("assignee", String.valueOf(tasks.get(0).get("assignee")));
 
+                System.out.println("Task Info for Process ID " + processId + ":");
+                System.out.println("Task ID: " + taskInfoMap.get("taskId"));
+                System.out.println("Task Name: " + taskInfoMap.get("taskName"));
+                System.out.println("Assignee: " + taskInfoMap.get("assignee"));
+
+                TaskInfo taskInfo = new TaskInfo();
+                taskInfo.setProcessId(processId);
+                taskInfo.setTaskId(taskInfoMap.get("taskId"));
+                taskInfo.setTaskName(taskInfoMap.get("taskName"));
+                taskInfo.setTaskAssignee(taskInfoMap.get("assignee"));
+
+                tasksList.add(taskInfo);
                 return taskInfo;
             } else {
                 System.err.println("No tasks found for Process ID " + processId);
@@ -172,56 +168,59 @@ public class CamundaService {
     }
 
     public String getTaskIdByProcessId(String processId) {
-        Map<String, String> taskInfo = getTaskInfoByProcessId(processId);
-        if (taskInfo != null) {
-            return taskInfo.get("taskId");
-        } else {
+        for (TaskInfo taskInfo : tasksList) {
+            if (taskInfo.getProcessId().equals(processId)) {
+                return taskInfo.getTaskId();
+            }
+        }
+        return null;
+    }
+
+    public String getTaskIdByProcessIdWithApi(String processId) {
+        String camundaUrl = "http://localhost:9000/engine-rest/task?processInstanceId=" + processId;
+
+        try {
+            ResponseEntity<List<Map>> response = restTemplate.exchange(camundaUrl, HttpMethod.GET, null, new ParameterizedTypeReference<List<Map>>() {
+            });
+            List<Map> tasks = response.getBody();
+
+            if (tasks != null && !tasks.isEmpty()) {
+                return String.valueOf(tasks.get(0).get("id"));
+            } else {
+                System.err.println("No tasks found for Process ID " + processId);
+                return null;
+            }
+        } catch (HttpClientErrorException e) {
+            String errorMessage = e.getResponseBodyAsString();
+            System.err.println("Error en la solicitud a Camunda: " + errorMessage);
             return null;
         }
     }
 
     public String getTaskNameByProcessId(String processId) {
-        Map<String, String> taskInfo = getTaskInfoByProcessId(processId);
-        if (taskInfo != null) {
-            return taskInfo.get("taskName");
-        } else {
-            return null;
+        for (TaskInfo taskInfo : tasksList) {
+            if (taskInfo.getProcessId().equals(processId)) {
+                return taskInfo.getTaskName();
+            }
         }
+        return null;
     }
 
-    public String assignVariablesTask(Boolean isValid){
-
-        // Construir el cuerpo de la solicitud para Camunda
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-
-        // Crear un mapa para los atributos que deseas enviar
-        Map<String, Object> variables = new HashMap<>();
-        variables.put("allFine", Map.of("value", isValid, "type", "Boolean"));
-
-        // Crear el cuerpo de la solicitud
-        Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("variables", variables);
-
-        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
-
-        try {
-            // Realizar la solicitud POST a Camunda
-            ResponseEntity<Map> response = restTemplate.postForEntity(camundaStartUrl, requestEntity, Map.class);
-            return "";
-        } catch (HttpClientErrorException e) {
-            String errorMessage = e.getResponseBodyAsString();
-            return null;
+    public void updateTaskByProcessId(String processId, String taskId) {
+        for (TaskInfo taskInfo : tasksList) {
+            if (taskInfo.getProcessId().equals(processId)) {
+                taskInfo.setTaskId(taskId);
+            }
         }
     }
 
     public String completeTask(String processId, String assignee, Boolean value, String variable) {
         // Obtener la información de la tarea a partir del Process ID
-        Map<String, String> taskInfo =  getTaskInfoByProcessId(processId);
+        TaskInfo taskInfo = getTaskInfoByProcessId(processId);
         if (taskInfo != null) {
             // Extraer el Task ID de la información de la tarea
-            String taskId = taskInfo.get("taskId");
+            String taskId = taskInfo.getTaskId();
+            System.out.println("taskid a completar: " + taskId);
             // Construir el cuerpo de la solicitud para Camunda
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
@@ -234,7 +233,7 @@ public class CamundaService {
             allFine.put("type", "Boolean");
             variables.put(variable, allFine);
             requestBody.put("variables", variables);
-            System.out.println("aqui estoy "+requestBody);
+            System.out.println("aqui estoy " + requestBody);
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
 
             // Realizar la solicitud POST a Camunda
@@ -242,10 +241,12 @@ public class CamundaService {
             try {
                 // Realizar la solicitud POST a Camunda
                 ResponseEntity<Map> response = restTemplate.postForEntity(camundaUrl, requestEntity, Map.class);
-                System.out.println("esta es la peticion "+response.getStatusCodeValue());
-                String taskId1 = getTaskIdByProcessId(processId);
-                if(taskId1!=null){
-                    setAssignee(taskId1,assignee);
+                System.out.println("esta es la peticion " + response.getStatusCodeValue());
+                String taskId1 = getTaskIdByProcessIdWithApi(processId);
+
+                if (taskId1 != null) {
+                    updateTaskByProcessId(processId,taskId1);
+                    setAssignee(taskId1, assignee);
                 }
                 return "";
             } catch (HttpClientErrorException e) {

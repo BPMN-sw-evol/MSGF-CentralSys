@@ -1,6 +1,7 @@
 package com.MSGFCentralSys.MSGFCentralSys.controller;
 
-import com.MSGFCentralSys.MSGFCentralSys.DTO.CreditRequestDTO;
+import com.MSGFCentralSys.MSGFCentralSys.dto.CreditRequestDTO;
+import com.MSGFCentralSys.MSGFCentralSys.dto.TaskInfo;
 import com.MSGFCentralSys.MSGFCentralSys.services.CamundaService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -31,18 +32,21 @@ public class HomeController {
     public String CreditAnalystView(Model model) throws IOException {
 
             List<String> processIds = this.camundaService.getAllProcessByAssignee("CreditAnalyst");
+            List<String> taskInfoList = new ArrayList<>();
             processVariablesList.clear();
             // Iterar a través de los processIds y obtener las variables para cada uno
             for (String processId : processIds) {
-                CreditRequestDTO creditRequestDTO1 = this.camundaService.getProcessVariablesByIdNew(processId);
-                processVariablesList.add(creditRequestDTO1);
+                CreditRequestDTO creditRequestDTO = this.camundaService.getProcessVariablesById(processId);
+                TaskInfo taskInfo = this.camundaService.getTaskInfoByProcessId(processId);
+                creditRequestDTO.setTaskInfo(taskInfo);
+                System.out.println("task info: "+taskInfo.toString());
+                processVariablesList.add(creditRequestDTO);
             }
 
             // Agregar la lista de variables de proceso al modelo para pasarla a la vista
             model.addAttribute("processIds", processIds);
             model.addAttribute("processVariablesList", processVariablesList);
             model.addAttribute("titulo", "Analyze applications");
-
             return "views/CreditAnalyst";
 
     }
@@ -55,10 +59,13 @@ public class HomeController {
         // Crear una lista para almacenar información de variables de proceso
         // Iterar a través de los processIds y obtener las variables para cada uno
         for (String processId : processIds) {
-            CreditRequestDTO creditRequestDTO1 = this.camundaService.getProcessVariablesByIdNew(processId);
-            processVariablesList.add(creditRequestDTO1);
-
+            CreditRequestDTO creditRequestDTO = this.camundaService.getProcessVariablesById(processId);
+            TaskInfo taskInfo = this.camundaService.getTaskInfoByProcessId(processId);
+            creditRequestDTO.setTaskInfo(taskInfo);
+            System.out.println("task info: "+taskInfo.toString());
+            processVariablesList.add(creditRequestDTO);
         }
+
 
         // Agregar la lista de variables de proceso al modelo para pasarla a la vista
         model.addAttribute("processIds", processIds);
