@@ -1,4 +1,4 @@
-package com.MSGFCentralSys.MSGFCentralSys.DTO;
+package com.MSGFCentralSys.MSGFCentralSys.dto;
 
 import lombok.Data;
 
@@ -13,4 +13,5 @@ public class CreditRequestDTO {
     private Long quotaValue;
     private Long coupleSavings;
     private String requestDate;
+    private TaskInfo taskInfo;
 }
