@@ -102,6 +102,14 @@ public class CamundaService {
             String requestDateValue = (String) requestDateMap.get("value");
             creditRequest.setRequestDate(requestDateValue);
 
+            Map<String, Object> coupleEmail1Map = (Map<String, Object>) variablesMap.get("coupleEmail1");
+            String coupleEmail1Value = (String) coupleEmail1Map.get("value");
+            creditRequest.setCoupleEmail1(coupleEmail1Value);
+
+            Map<String, Object> coupleEmail2Map = (Map<String, Object>) variablesMap.get("coupleEmail2");
+            String coupleEmail2Value = (String) coupleEmail2Map.get("value");
+            creditRequest.setCoupleEmail2(coupleEmail2Value);
+
             creditRequest.setProcessId(processId);
             return creditRequest;
         } else {
