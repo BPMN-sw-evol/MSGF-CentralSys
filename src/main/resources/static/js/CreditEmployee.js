@@ -5,17 +5,23 @@ function fillFormFields(button) {
     // Obtener los datos de la fila
     var taskId = row.querySelector("td:nth-child(1)").textContent;
     var coupleName = row.querySelector("td:nth-child(2)").textContent;
-    var requestDate = row.querySelector("td:nth-child(4)").textContent;
-    var marriageYears = row.querySelector("td:nth-child(5)").textContent;
-    var bothEmployees = row.querySelector("td:nth-child(6)").textContent;
-    var housePrices = row.querySelector("td:nth-child(7)").textContent;
-    var quotaValue = row.querySelector("td:nth-child(8)").textContent;
-    var coupleSavings = row.querySelector("td:nth-child(9)").textContent;
+    var requestDate = row.querySelector("td:nth-child(3)").textContent;
+    var state = row.querySelector("td:nth-child(4)").textContent;
+    var coupleEmail1 = row.querySelector("td:nth-child(5)").textContent;
+    var coupleEmail2 = row.querySelector("td:nth-child(6)").textContent;
+    var marriageYears = row.querySelector("td:nth-child(7)").textContent;
+    var bothEmployees = row.querySelector("td:nth-child(8)").textContent;
+    var housePrices = row.querySelector("td:nth-child(9)").textContent;
+    var quotaValue = row.querySelector("td:nth-child(10)").textContent;
+    var coupleSavings = row.querySelector("td:nth-child(11)").textContent;
 
     // Llenar los campos del formulario
     document.getElementById("taskId").value = taskId;
     document.getElementById("CoupleName").value = coupleName;
     document.getElementById("requestDate").value = requestDate;
+    document.getElementById("state").value = state;
+    document.getElementById("coupleEmail1").value = coupleEmail1;
+    document.getElementById("coupleEmail2").value = coupleEmail2;
     document.getElementById("marriageYears").value = marriageYears;
     document.getElementById("bothEmployees").value = bothEmployees;
     document.getElementById("bothEmployees").setAttribute("readonly", "readonly");

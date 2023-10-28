@@ -21,7 +21,9 @@
         <td th:text="${processVariablesList.TaskInfo.processId}"></td>
         <td th:text="${processVariablesList.coupleName1 + ' y ' + processVariablesList.coupleName2}"></td>
         <td th:text="${processVariablesList.requestDate}"></td>
-        <td style="overflow: hidden" th:text="${processVariablesList.TaskInfo.taskName}"></td>
+        <td th:text="${processVariablesList.TaskInfo.taskName}"></td>
+        <td style="display: none" th:text="${processVariablesList.coupleEmail1}"></td>
+        <td style="display: none" th:text="${processVariablesList.coupleEmail2}"></td>
         <td style="display: none" th:text="${processVariablesList.marriageYears}"></td>
         <td style="display: none" th:text="${processVariablesList.bothEmployees}"></td>
         <td style="display: none" th:text="${processVariablesList.housePrices}"></td>

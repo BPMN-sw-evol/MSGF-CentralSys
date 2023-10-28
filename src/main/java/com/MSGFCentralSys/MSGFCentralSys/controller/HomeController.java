@@ -41,6 +41,7 @@ public class HomeController {
                 System.out.println("task info: "+taskInfo.toString());
                 processVariablesList.add(creditRequestDTO);
             }
+        System.out.println("info traida api: "+processVariablesList.toString());
 
             // Agregar la lista de variables de proceso al modelo para pasarla a la vista
             model.addAttribute("processVariablesList", processVariablesList);
