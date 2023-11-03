@@ -5,7 +5,6 @@ import com.MSGFCentralSys.MSGFCentralSys.dto.TaskInfo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -20,16 +19,16 @@ import java.sql.SQLException;
 import java.util.*;
 
 @Service
-public class CamundaService {
+public class CreditCommitteServices {
     private final RestTemplate restTemplate;
     private List<TaskInfo> tasksList = new ArrayList<>();
 
     @Autowired
-    public CamundaService(RestTemplate restTemplate) {
+    public CreditCommitteServices(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
-    public List<String> getAllProcessByAssignee(String assignee) throws IOException {
+    public List<String> getAllProcessByCreditCommitte(String assignee) throws IOException {
         String CAMUNDA_API_URL = "http://localhost:9000/engine-rest/task?withoutTenantId=false&assignee=" + assignee + "&includeAssignedTasks=false&assigned=false&unassigned=false&withoutDueDate=false&withCandidateGroups=false&withoutCandidateGroups=false&withCandidateUsers=false&withoutCandidateUsers=false&active=false&suspended=false&variableNamesIgnoreCase=false&variableValuesIgnoreCase=false&sortBy=created&sortOrder=desc";
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(CAMUNDA_API_URL, String.class);
         //

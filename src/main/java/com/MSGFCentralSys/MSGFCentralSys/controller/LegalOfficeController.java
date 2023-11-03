@@ -3,16 +3,12 @@ package com.MSGFCentralSys.MSGFCentralSys.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-
 @Controller
-public class HomeController {
+public class LegalOfficeController {
 
-    @GetMapping({"/home","/"})
-    public String mainView(Model model) {
-        model.addAttribute("titulo","Welcome to the MsgFoundation's CENTRAL SYS");
-        return "init";
+    @GetMapping({"/LegalOffice"})
+    public String LegalOfficeView(Model model) {
+        model.addAttribute("titulo","");
+        return "views/LegalOffice";
     }
-
 }
-
-

@@ -75,8 +75,6 @@ function fillFormFields(button) {
         var approveButton = document.getElementById("approveButton");
         var rejectedButton = document.getElementById("rejectedButton");
 
-        form.action = "/completeCreditAnalyst";
-
         // Agregar un controlador de clic al botón de aprobación
         approveButton.addEventListener("click", function (event) {
             event.preventDefault(); // Evitar que el formulario se envíe automáticamente
