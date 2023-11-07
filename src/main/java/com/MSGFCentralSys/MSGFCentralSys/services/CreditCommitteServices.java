@@ -118,6 +118,10 @@ public class CreditCommitteServices {
             String coupleEmail2Value = (String) coupleEmail2Map.get("value");
             creditRequest.setCoupleEmail2(coupleEmail2Value);
 
+            Map<String, Object> countReviewsCSMap = (Map<String, Object>) variablesMap.getOrDefault("countReviewsBpm", Collections.singletonMap("value", 0));
+            Integer countReviewsCSValue = (Integer) countReviewsCSMap.get("value");
+            creditRequest.setCountReviewsCS(countReviewsCSValue != null ? countReviewsCSValue.longValue() : 0);
+
             creditRequest.setProcessId(processId);
             return creditRequest;
         } else {

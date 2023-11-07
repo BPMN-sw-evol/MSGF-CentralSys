@@ -18,4 +18,5 @@ public class CreditRequestDTO {
     private Long coupleSavings;
     private String requestDate;
     private TaskInfo taskInfo;
+    private Long countReviewsCS;
 }

@@ -114,6 +114,10 @@ public class CreditAnalystServices {
             String coupleEmail2Value = (String) coupleEmail2Map.get("value");
             creditRequest.setCoupleEmail2(coupleEmail2Value);
 
+            Map<String, Object> countReviewsCSMap = (Map<String, Object>) variablesMap.getOrDefault("countReviewsBpm", Collections.singletonMap("value", 0));
+            Integer countReviewsCSValue = (Integer) countReviewsCSMap.get("value");
+            creditRequest.setCountReviewsCS(countReviewsCSValue != null ? countReviewsCSValue.longValue() : 0);
+
             creditRequest.setProcessId(processId);
             return creditRequest;
         } else {
@@ -263,9 +267,9 @@ public class CreditAnalystServices {
 
                 if (taskId1 != null) {
                     // Validar si la variable "assignee" tiene el valor "marriedCouple"
-                    if ("MarriedCouple".equals(assignee)) {
+                    if (!value) {
                         // Actualizar el valor "status" a "Draft" en la tabla "CreditRequest"
-                        String updateStatusQuery = "UPDATE credit_request SET status = 'DRAFT' WHERE process_id = ?";
+                        String updateStatusQuery = "UPDATE credit_request SET status = 'DRAFT', count_reviewcr = count_reviewcr + 1 WHERE process_id = ?";
                         try (PreparedStatement statement = connection.prepareStatement(updateStatusQuery)) {
                             statement.setString(1, processId);
                             int rowsAffected = statement.executeUpdate();

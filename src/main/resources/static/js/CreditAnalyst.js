@@ -6,14 +6,14 @@ function fillFormFields(button) {
     var taskId = row.querySelector("td:nth-child(1)").textContent;
     var coupleName = row.querySelector("td:nth-child(2)").textContent;
     var requestDate = row.querySelector("td:nth-child(3)").textContent;
-    var state = row.querySelector("td:nth-child(4)").textContent;
-    var coupleEmail1 = row.querySelector("td:nth-child(5)").textContent;
-    var coupleEmail2 = row.querySelector("td:nth-child(6)").textContent;
-    var marriageYears = row.querySelector("td:nth-child(7)").textContent;
-    var bothEmployees = row.querySelector("td:nth-child(8)").textContent;
-    var housePrices = row.querySelector("td:nth-child(9)").textContent;
-    var quotaValue = row.querySelector("td:nth-child(10)").textContent;
-    var coupleSavings = row.querySelector("td:nth-child(11)").textContent;
+    var state = row.querySelector("td:nth-child(5)").textContent;
+    var coupleEmail1 = row.querySelector("td:nth-child(6)").textContent;
+    var coupleEmail2 = row.querySelector("td:nth-child(7)").textContent;
+    var marriageYears = row.querySelector("td:nth-child(8)").textContent;
+    var bothEmployees = row.querySelector("td:nth-child(9)").textContent;
+    var housePrices = row.querySelector("td:nth-child(10)").textContent;
+    var quotaValue = row.querySelector("td:nth-child(11)").textContent;
+    var coupleSavings = row.querySelector("td:nth-child(12)").textContent;
 
     // Llenar los campos del formulario
     document.getElementById("taskId").value = taskId;

@@ -24,6 +24,7 @@
                                 <th>Instance Id</th>
                                 <th>Couple's Names</th>
                                 <th>Start Date</th>
+                                <th>Count Reviews</th>
                                 <th>State</th>
                                 <th>Action</th>
                             </tr>
@@ -34,6 +35,7 @@
                                 <td th:text="${processVariablesList.TaskInfo.processId}"></td>
                                 <td th:text="${processVariablesList.coupleName1 + ' y ' + processVariablesList.coupleName2}"></td>
                                 <td th:text="${processVariablesList.requestDate}"></td>
+                                <td th:text="${processVariablesList.countReviewsCS}"></td>
                                 <td th:text="${processVariablesList.TaskInfo.taskName}"></td>
                                 <td style="display: none" th:text="${processVariablesList.coupleEmail1}"></td>
                                 <td style="display: none" th:text="${processVariablesList.coupleEmail2}"></td>
