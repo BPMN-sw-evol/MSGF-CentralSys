@@ -1,5 +1,9 @@
 package com.MSGFCentralSys.MSGFCentralSys.services;
 
+import com.MSGFCentralSys.MSGFCentralSys.annotations.BPMNGetVariables;
+import com.MSGFCentralSys.MSGFCentralSys.annotations.BPMNGetterVariables;
+import com.MSGFCentralSys.MSGFCentralSys.annotations.BPMNSetterVariables;
+import com.MSGFCentralSys.MSGFCentralSys.annotations.BPMNTask;
 import com.MSGFCentralSys.MSGFCentralSys.dto.CreditRequestDTO;
 import com.MSGFCentralSys.MSGFCentralSys.dto.TaskInfo;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -19,6 +23,7 @@ import java.sql.SQLException;
 import java.util.*;
 
 @Service
+@BPMNTask(type = "UserTask",name = {"Revisar información pareja","Verificar validez"})
 public class CreditAnalystServices {
     private final RestTemplate restTemplate;
     private List<TaskInfo> tasksList = new ArrayList<>();
@@ -28,6 +33,7 @@ public class CreditAnalystServices {
         this.restTemplate = restTemplate;
     }
 
+    @BPMNGetterVariables(value = "Processes Instances")
     public List<String> getAllProcessByCreditAnalyst(String assignee) throws IOException {
         String CAMUNDA_API_URL = "http://localhost:9000/engine-rest/task?withoutTenantId=false&assignee=" + assignee + "&includeAssignedTasks=false&assigned=false&unassigned=false&withoutDueDate=false&withCandidateGroups=false&withoutCandidateGroups=false&withCandidateUsers=false&withoutCandidateUsers=false&active=false&suspended=false&variableNamesIgnoreCase=false&variableValuesIgnoreCase=false&sortBy=created&sortOrder=desc";
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(CAMUNDA_API_URL, String.class);
@@ -51,6 +57,7 @@ public class CreditAnalystServices {
         }
     }
 
+    @BPMNGetterVariables(value = "CreditRequestDTO")
     public CreditRequestDTO getProcessVariablesById(String processId) {
         String CAMUNDA_API_URL = "http://localhost:9000/engine-rest/";
         String camundaURL = CAMUNDA_API_URL + "process-instance/" + processId + "/variables?deserializeValues=true";
@@ -114,6 +121,7 @@ public class CreditAnalystServices {
         }
     }
 
+    @BPMNSetterVariables(variables = "assignee")
     public void setAssignee(String taskId, String userId) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -134,6 +142,7 @@ public class CreditAnalystServices {
         }
     }
 
+    @BPMNGetterVariables(value = "TaskInfo")
     public TaskInfo getTaskInfoByProcessId(String processId) {
         // Construir la URL para consultar las tareas relacionadas con el proceso
         String camundaUrl = "http://localhost:9000/engine-rest/task?processInstanceId=" + processId;
@@ -176,6 +185,7 @@ public class CreditAnalystServices {
         }
     }
 
+    @BPMNGetterVariables(value = "taskId")
     public String getTaskIdByProcessIdWithApi(String processId) {
         String camundaUrl = "http://localhost:9000/engine-rest/task?processInstanceId=" + processId;
 
@@ -196,7 +206,7 @@ public class CreditAnalystServices {
             return null;
         }
     }
-
+    @BPMNGetterVariables(value = "taskName")
     public String getTaskNameByProcessId(String processId) {
         for (TaskInfo taskInfo : tasksList) {
             if (taskInfo.getProcessId().equals(processId)) {
@@ -205,7 +215,7 @@ public class CreditAnalystServices {
         }
         return null;
     }
-
+    @BPMNSetterVariables(variables = "taskInfo")
     public void updateTaskByProcessId(String processId, String taskId) {
         for (TaskInfo taskInfo : tasksList) {
             if (taskInfo.getProcessId().equals(processId)) {
@@ -213,7 +223,7 @@ public class CreditAnalystServices {
             }
         }
     }
-
+    @BPMNSetterVariables()
     public String completeTask(String processId, String assignee, Boolean value, String variable) {
         // Obtener la información de la tarea a partir del Process ID
         Connection connection;
