@@ -23,8 +23,8 @@ public class CreditAnalystController {
     }
 
 
-    @GetMapping("/CreditAnalyst")
-    public String CreditAnalystView(Model model) throws IOException {
+    @GetMapping("/credit-analyst-couple")
+    public String CreditAnalystCoupleView(Model model) throws IOException {
 
         List<String> processIds = this.camundaService.getAllProcessByCreditAnalyst("CreditAnalyst");
         processVariablesListCA.clear();
@@ -39,16 +39,36 @@ public class CreditAnalystController {
         // Agregar la lista de variables de proceso al modelo para pasarla a la vista
         model.addAttribute("processVariablesList", processVariablesListCA);
         model.addAttribute("titulo", "Analyze applications");
-        return "views/CreditAnalyst";
+        return "views/CreditAnalystCouple";
 
     }
 
-    @GetMapping("/completeCreditAnalyst")
+    @GetMapping("/credit-analyst-validate")
+    public String CreditAnalystValidateView(Model model) throws IOException {
+
+        List<String> processIds = this.camundaService.getAllProcessByCreditAnalyst("CreditAnalyst");
+        processVariablesListCA.clear();
+        // Iterar a través de los processIds y obtener las variables para cada uno
+        for (String processId : processIds) {
+            CreditRequestDTO creditRequestDTO = this.camundaService.getProcessVariablesById(processId);
+            TaskInfo taskInfo = this.camundaService.getTaskInfoByProcessId(processId);
+            creditRequestDTO.setTaskInfo(taskInfo);
+            processVariablesListCA.add(creditRequestDTO);
+        }
+
+        // Agregar la lista de variables de proceso al modelo para pasarla a la vista
+        model.addAttribute("processVariablesList", processVariablesListCA);
+        model.addAttribute("titulo", "Analyze applications");
+        return "views/CreditAnalystValidate";
+
+    }
+
+    @GetMapping("/complete-credit-analyst-couple")
     public String completeTaskCreditAnalyst(@RequestParam(name = "taskId") String taskId, @RequestParam(name="assignee") String assignee, @RequestParam(name="value") Boolean value, @RequestParam("variable") String variable) throws IOException {
         System.out.println("aqui estoy"+value);
         System.out.println("aqui estoy"+assignee);
 
         this.camundaService.completeTask(taskId, assignee, value, variable);
-        return "redirect:/CreditAnalyst";
+        return "redirect:/credit-analyst-couple";
     }
 }

@@ -25,7 +25,7 @@
 <link th:href="@{/css/style.css}" rel="stylesheet">
 
 
-<title>Employeed Panel</title>
+<title>Employee Panel</title>
 </head>
 <body id="page-top">
 
@@ -40,7 +40,7 @@
                 <div class="sidebar-brand-icon rotate-n-15">
                     <i class="fa-solid fa-face-laugh-wink"></i>
                 </div>
-                <div class="sidebar-brand-text mx-3">Employeed Panel <sup>MsgF</sup></div>
+                <div class="sidebar-brand-text mx-3">Employee Panel <sup>MsgF</sup></div>
             </a>
 
             <!-- Divider -->
@@ -52,19 +52,33 @@
 
             <!-- Heading -->
             <div class="sidebar-heading">
-                Employeed Panel
+                Employee Panel
             </div>
 
             <li class="nav-item">
-                <a class="nav-link" href="/CreditAnalyst">
+                <a class="nav-link dropdown-toggle" href="#" id="CreditAnalystDropdown" role="button"
+                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <i class="fa-solid fa-clipboard-question"></i>
-                    <span>Credit Analyst</span></a>
+                    <span>Credit Analyst</span>
+                </a>
+                <!-- Dropdown - User Information -->
+                <div class="dropdown-menu dropdown-menu-right shadow animated--grow-in"
+                     aria-labelledby="CreditAnalystDropdown">
+                    <a class="dropdown-item" href="/credit-analyst-couple">
+                        <i class="fas fa-user fa-sm fa-fw mr-2 text-gray-400"></i>
+                        Couple Information
+                    </a>
+                    <a class="dropdown-item" href="/credit-analyst-validate">
+                        <i class="fas fa-cogs fa-sm fa-fw mr-2 text-gray-400"></i>
+                        Check Validity
+                    </a>
+                </div>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="/CreditCommitte">
+                <a class="nav-link" href="/credit-committee">
                     <i class="fa-solid fa-clipboard-check"></i>
-                    <span>Credit Comitte</span></a>
+                    <span>Credit Committee</span></a>
             </li>
 
             <li class="nav-item">
