@@ -56,18 +56,6 @@ function fillFormFields(button) {
         document.getElementById("coupleSavings").value = coupleSavings;
     }
 
-    // Establecer el valor de assignee
-    var variable = "allFine";
-    var assignee = "CreditAnalyst";
-    if (housePrices !== "0" && quotaValue !== "0" && coupleSavings !== "0") {
-        assignee = "CreditCommitte";
-        variable = "isValid";
-
-    }
-
-    document.getElementById("variable").value =variable
-    document.getElementById("assignee").value = assignee;
-
 }
 
 
@@ -110,7 +98,6 @@ function fillFormFields(button) {
         rejectedButton.addEventListener("click", function (event) {
             event.preventDefault(); // Evitar que el formulario se envíe automáticamente
             document.getElementById("value").value = "false";
-            document.getElementById("assignee").value = "MarriedCouple";
 
             // Mostrar la alerta con un indicador de carga al inicio del envío del formulario
             Swal.fire({

@@ -23,7 +23,7 @@ public class CreditCommitteController {
 
     @GetMapping({"/credit-committee"})
     public String CreditCommitteView(Model model) throws IOException {
-        List<String> processIds = this.camundaService.getAllProcessByCreditCommitte("CreditCommitte");
+        List<String> processIds = this.camundaService.getAllProcessByActivityId("Activity_14mlhta");
         processVariablesListCC.clear();
 
         // Crear una lista para almacenar información de variables de proceso
@@ -45,8 +45,8 @@ public class CreditCommitteController {
     }
 
     @GetMapping("/complete-credit-committee")
-    public String completeTaskCreditCommitte(@RequestParam(name = "taskId") String taskId, @RequestParam(name="assignee") String assignee, @RequestParam(name="value") String value, @RequestParam("variable") String variable) throws IOException {
-        this.camundaService.completeTask(taskId, assignee, value, variable);
+    public String completeTaskCreditCommitte(@RequestParam(name = "taskId") String taskId){
+        this.camundaService.completeTask(taskId);
         return "redirect:/credit-committee";
     }
 }
