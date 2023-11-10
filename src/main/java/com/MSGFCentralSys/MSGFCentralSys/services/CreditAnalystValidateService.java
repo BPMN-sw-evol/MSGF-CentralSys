@@ -1,9 +1,7 @@
 package com.MSGFCentralSys.MSGFCentralSys.services;
 
-import com.MSGFCentralSys.MSGFCentralSys.annotations.BPMNGetVariables;
 import com.MSGFCentralSys.MSGFCentralSys.annotations.BPMNGetterVariables;
 import com.MSGFCentralSys.MSGFCentralSys.annotations.BPMNSetterVariables;
-import com.MSGFCentralSys.MSGFCentralSys.annotations.BPMNTask;
 import com.MSGFCentralSys.MSGFCentralSys.dto.CreditRequestDTO;
 import com.MSGFCentralSys.MSGFCentralSys.dto.TaskInfo;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -23,38 +21,40 @@ import java.sql.SQLException;
 import java.util.*;
 
 @Service
-@BPMNTask(type = "UserTask",name = {"Revisar información pareja","Verificar validez"})
-public class CreditAnalystServices {
+public class CreditAnalystValidateService {
     private final RestTemplate restTemplate;
     private List<TaskInfo> tasksList = new ArrayList<>();
 
     @Autowired
-    public CreditAnalystServices(RestTemplate restTemplate) {
+    public CreditAnalystValidateService(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
     @BPMNGetterVariables(value = "Processes Instances")
-    public List<String> getAllProcessByCreditAnalyst(String assignee) throws IOException {
-        String CAMUNDA_API_URL = "http://localhost:9000/engine-rest/task?withoutTenantId=false&assignee=" + assignee + "&includeAssignedTasks=false&assigned=false&unassigned=false&withoutDueDate=false&withCandidateGroups=false&withoutCandidateGroups=false&withCandidateUsers=false&withoutCandidateUsers=false&active=false&suspended=false&variableNamesIgnoreCase=false&variableValuesIgnoreCase=false&sortBy=created&sortOrder=desc";
-        ResponseEntity<String> responseEntity = restTemplate.getForEntity(CAMUNDA_API_URL, String.class);
-        //
+    public List<String> getAllProcessByActivityId(String activityId) {
+        String url = "http://localhost:9000/engine-rest/history/activity-instance?sortBy=startTime&sortOrder=asc&activityId=" + activityId + "&finished=false&unfinished=true&withoutTenantId=false";
+        ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
+
+        List<String> processIds = new ArrayList<>();
 
         if (responseEntity.getStatusCode().is2xxSuccessful()) {
             String responseBody = responseEntity.getBody();
             ObjectMapper objectMapper = new ObjectMapper();
-            JsonNode jsonNode = objectMapper.readTree(responseBody);
-            List<String> processIds = new ArrayList<>();
 
-            for (JsonNode instanceNode : jsonNode) {
-                String processId = instanceNode.get("processInstanceId").asText();
-                processIds.add(processId);
+            try {
+                JsonNode jsonNode = objectMapper.readTree(responseBody);
+                for (JsonNode node : jsonNode) {
+                    String processInstanceId = node.get("processInstanceId").asText();
+                    processIds.add(processInstanceId);
+                }
+            } catch (IOException e) {
+                System.err.println("Error al analizar la respuesta JSON: " + e.getMessage());
             }
-
-            return processIds;
         } else {
             System.err.println("Error al obtener las instancias de proceso: " + responseEntity.getStatusCode());
-            return new ArrayList<>();
         }
+
+        return processIds;
     }
 
     @BPMNGetterVariables(value = "CreditRequestDTO")
@@ -252,7 +252,7 @@ public class CreditAnalystServices {
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
 
             try {
-                  connection = DriverManager.getConnection("jdbc:postgresql://rds-msgf.cyrlczakjihy.us-east-1.rds.amazonaws.com:5432/credit_request", "postgres", "msgfoundation");
+                connection = DriverManager.getConnection("jdbc:postgresql://rds-msgf.cyrlczakjihy.us-east-1.rds.amazonaws.com:5432/credit_request", "postgres", "msgfoundation");
             } catch (SQLException e) {
                 throw new RuntimeException(e);
             }
