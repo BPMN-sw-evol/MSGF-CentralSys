@@ -69,20 +69,14 @@ public class CreditAnalystController {
     }
 
     @GetMapping("/complete-credit-analyst-couple")
-    public String completeTaskCreditAnalystCouple(@RequestParam(name = "taskId") String taskId, @RequestParam(name="assignee") String assignee, @RequestParam(name="value") Boolean value, @RequestParam("variable") String variable) throws IOException {
-        System.out.println("aqui estoy"+value);
-        System.out.println("aqui estoy"+assignee);
-
-        this.creditAnalystCoupleServices.completeTask(taskId, assignee, value, variable);
+    public String completeTaskCreditAnalystCouple(@RequestParam(name = "taskId") String taskId, @RequestParam(name="value") Boolean value){
+        this.creditAnalystCoupleServices.completeTask(taskId, value);
         return "redirect:/credit-analyst-couple";
     }
 
     @GetMapping("/complete-credit-analyst-validate")
-    public String completeTaskCreditAnalystValidate(@RequestParam(name = "taskId") String taskId, @RequestParam(name="assignee") String assignee, @RequestParam(name="value") Boolean value, @RequestParam("variable") String variable) throws IOException {
-        System.out.println("aqui estoy"+value);
-        System.out.println("aqui estoy"+assignee);
-
-        this.creditAnalystValidateService.completeTask(taskId, assignee, value, variable);
-        return "redirect:/credit-analyst-couple";
+    public String completeTaskCreditAnalystValidate(@RequestParam(name = "taskId") String taskId, @RequestParam(name="value") Boolean value){
+        this.creditAnalystValidateService.completeTask(taskId, value);
+        return "redirect:/credit-analyst-validate";
     }
 }

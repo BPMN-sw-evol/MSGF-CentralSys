@@ -228,71 +228,44 @@ public class CreditAnalystValidateService {
         }
     }
     @BPMNSetterVariables()
-    public String completeTask(String processId, String assignee, Boolean value, String variable) {
-        // Obtener la información de la tarea a partir del Process ID
-        Connection connection;
+    public String completeTask(String processId, Boolean value) {
         TaskInfo taskInfo = getTaskInfoByProcessId(processId);
+
         if (taskInfo != null) {
-            // Extraer el Task ID de la información de la tarea
             String taskId = taskInfo.getTaskId();
-            System.out.println("taskid a completar: " + taskId);
-            // Construir el cuerpo de la solicitud para Camunda
             HttpHeaders headers = new HttpHeaders();
             headers.setContentType(MediaType.APPLICATION_JSON);
-            // Crear el cuerpo de la solicitud
+
             Map<String, Object> requestBody = new HashMap<>();
-            // Crear la estructura que coincide con el formato de Postman
             Map<String, Object> variables = new HashMap<>();
-            Map<String, Object> allFine = new HashMap<>();
-            allFine.put("value", value);
-            allFine.put("type", "Boolean");
-            variables.put(variable, allFine);
+            Map<String, Object> isValid = new HashMap<>();
+            isValid.put("value", value);
+            isValid.put("type", "Boolean");
+            variables.put("isValid", isValid);
             requestBody.put("variables", variables);
-            System.out.println("aqui estoy " + requestBody);
+
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
 
-            try {
-                connection = DriverManager.getConnection("jdbc:postgresql://rds-msgf.cyrlczakjihy.us-east-1.rds.amazonaws.com:5432/credit_request", "postgres", "msgfoundation");
-            } catch (SQLException e) {
-                throw new RuntimeException(e);
-            }
+            try (Connection connection = DriverManager.getConnection("jdbc:postgresql://rds-msgf.cyrlczakjihy.us-east-1.rds.amazonaws.com:5432/credit_request", "postgres", "msgfoundation")) {
+                String camundaUrl = "http://localhost:9000/engine-rest/task/" + taskId + "/complete";
+                restTemplate.postForEntity(camundaUrl, requestEntity, Map.class);
 
-            // Realizar la solicitud POST a Camunda
-            String camundaUrl = "http://localhost:9000/engine-rest/task/" + taskId + "/complete";
-            try {
-                // Realizar la solicitud POST a Camunda
-                ResponseEntity<Map> response = restTemplate.postForEntity(camundaUrl, requestEntity, Map.class);
-                System.out.println("esta es la peticion " + response.getStatusCodeValue());
-                String taskId1 = getTaskIdByProcessIdWithApi(processId);
+                String newTaskId = getTaskIdByProcessIdWithApi(processId);
 
-                if (taskId1 != null) {
-                    // Validar si la variable "assignee" tiene el valor "marriedCouple"
-                    if (!value) {
-                        // Actualizar el valor "status" a "Draft" en la tabla "CreditRequest"
-                        String updateStatusQuery = "UPDATE credit_request SET status = 'DRAFT', count_reviewcr = count_reviewcr + 1 WHERE process_id = ?";
-                        try (PreparedStatement statement = connection.prepareStatement(updateStatusQuery)) {
-                            statement.setString(1, processId);
-                            int rowsAffected = statement.executeUpdate();
-                            if (rowsAffected > 0) {
-                                // La actualización fue exitosa
-                            } else {
-                                // La actualización no afectó ninguna fila, lo que podría indicar que el "processId" no se encontró en la tabla.
-                            }
-                        } catch (SQLException e) {
-                            // Manejar excepciones de SQL, si es necesario.
-                        }
+                if (newTaskId != null) {
+                    updateTaskByProcessId(processId, newTaskId);
+
+                    if (value) {
+                        setAssignee(newTaskId, "CreditCommittee");
                     }
-                    updateTaskByProcessId(processId,taskId1);
-                    setAssignee(taskId1, assignee);
                 }
-                return "";
-            } catch (HttpClientErrorException e) {
-                String errorMessage = e.getResponseBodyAsString();
-                System.err.println("Error en la solicitud a Camunda: " + errorMessage);
+                return null;
+            } catch (SQLException | HttpClientErrorException e) {
+                System.err.println("Error during task completion: " + e.getMessage());
                 return null;
             }
         } else {
-            System.err.println("No se pudo obtener información de la tarea para Process ID " + processId);
+            System.err.println("No task information found for Process ID " + processId);
             return null;
         }
     }
