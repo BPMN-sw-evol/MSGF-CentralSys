@@ -42,7 +42,7 @@ public class CreditAnalystController {
 
         // Agregar la lista de variables de proceso al modelo para pasarla a la vista
         model.addAttribute("processVariablesList", processVariablesListCA);
-        model.addAttribute("titulo", "Analyze applications");
+        model.addAttribute("titulo", "Analyze Information Couple of Applications");
         return "views/CreditAnalystCouple";
 
     }
@@ -63,7 +63,7 @@ public class CreditAnalystController {
 
         // Agregar la lista de variables de proceso al modelo para pasarla a la vista
         model.addAttribute("processVariablesList", processVariablesListCA);
-        model.addAttribute("titulo", "Analyze applications");
+        model.addAttribute("titulo", "Verify Validity of Applications");
         return "views/CreditAnalystValidate";
 
     }

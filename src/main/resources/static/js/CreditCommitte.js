@@ -6,7 +6,8 @@ function fillFormFields(button) {
     var taskId = row.querySelector("td:nth-child(1)").textContent;
     var coupleName = row.querySelector("td:nth-child(2)").textContent;
     var requestDate = row.querySelector("td:nth-child(3)").textContent;
-    var state = row.querySelector("td:nth-child(5)").textContent;
+    var state = row.querySelector("td:nth-child(4)").textContent;
+    var countReviewsCS = row.querySelector("td:nth-child(5)").textContent;
     var coupleEmail1 = row.querySelector("td:nth-child(6)").textContent;
     var coupleEmail2 = row.querySelector("td:nth-child(7)").textContent;
     var marriageYears = row.querySelector("td:nth-child(8)").textContent;
@@ -20,6 +21,7 @@ function fillFormFields(button) {
     document.getElementById("CoupleName").value = coupleName;
     document.getElementById("requestDate").value = requestDate;
     document.getElementById("state").value = state;
+    document.getElementById("countReviewsCS").value = countReviewsCS;
     document.getElementById("coupleEmail1").value = coupleEmail1;
     document.getElementById("coupleEmail2").value = coupleEmail2;
     document.getElementById("marriageYears").value = marriageYears;
