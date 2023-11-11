@@ -229,7 +229,7 @@ public class CreditAnalystCoupleServices {
             }
         }
     }
-    @BPMNSetterVariables()
+    @BPMNSetterVariables(variables = "allFine")
     public String completeTask(String processId, Boolean value) {
         TaskInfo taskInfo = getTaskInfoByProcessId(processId);
 
