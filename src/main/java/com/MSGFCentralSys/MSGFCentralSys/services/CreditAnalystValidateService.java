@@ -227,7 +227,7 @@ public class CreditAnalystValidateService {
             }
         }
     }
-    @BPMNSetterVariables()
+    @BPMNSetterVariables(variables = "isValid")
     public String completeTask(String processId, Boolean value) {
         TaskInfo taskInfo = getTaskInfoByProcessId(processId);
 
@@ -246,24 +246,20 @@ public class CreditAnalystValidateService {
 
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
 
-            try (Connection connection = DriverManager.getConnection("jdbc:postgresql://rds-msgf.cyrlczakjihy.us-east-1.rds.amazonaws.com:5432/credit_request", "postgres", "msgfoundation")) {
-                String camundaUrl = "http://localhost:9000/engine-rest/task/" + taskId + "/complete";
-                restTemplate.postForEntity(camundaUrl, requestEntity, Map.class);
+            String camundaUrl = "http://localhost:9000/engine-rest/task/" + taskId + "/complete";
+            restTemplate.postForEntity(camundaUrl, requestEntity, Map.class);
 
-                String newTaskId = getTaskIdByProcessIdWithApi(processId);
+            String newTaskId = getTaskIdByProcessIdWithApi(processId);
 
-                if (newTaskId != null) {
-                    updateTaskByProcessId(processId, newTaskId);
+            if (newTaskId != null) {
+                updateTaskByProcessId(processId, newTaskId);
 
-                    if (value) {
-                        setAssignee(newTaskId, "CreditCommittee");
-                    }
+                if (value) {
+                    setAssignee(newTaskId, "CreditCommittee");
                 }
-                return null;
-            } catch (SQLException | HttpClientErrorException e) {
-                System.err.println("Error during task completion: " + e.getMessage());
-                return null;
             }
+            return null;
+
         } else {
             System.err.println("No task information found for Process ID " + processId);
             return null;
