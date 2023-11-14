@@ -16,10 +16,6 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.*;
 
 @Service
@@ -238,7 +234,7 @@ public class CreditCommitteServices {
     }
 
     @BPMNSetterVariables()
-    public String completeTask(String processId) {
+    public String approveTask(String processId) {
         TaskInfo taskInfo = getTaskInfoByProcessId(processId);
 
         if (taskInfo != null) {

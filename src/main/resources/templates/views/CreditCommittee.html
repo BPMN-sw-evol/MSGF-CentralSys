@@ -63,7 +63,7 @@
                                                 aria-label="Close">
                                         </button>
                                     </div>
-                                    <form action="/complete-credit-committee" method="get">
+                                    <form action="/approve-credit-committee" method="post">
                                         <div class="modal-body">
                                             <div class="card-body">
                                                 <div class="card-header">
@@ -160,51 +160,10 @@
                                                 </div>
                                             </div>
                                         </div>
-
                                         <div class="modal-footer d-flex justify-content-around">
-                                            <button type="button" class="btn btn-danger" data-toggle="modal"
-                                                    data-target="#applicationRejectedCommittee">
-                                                <i class="fa-solid fa-circle-xmark mx-1"></i>
-                                                <span>Rejected</span>
-                                            </button>
                                             <button id="approveButton" type="submit" class="btn btn-success">
                                                 <i class="fa-solid fa-circle-check mx-1"></i>
                                                 <span>Approve</span>
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="modal fade" id="applicationRejectedCommittee" tabindex="-1"
-                             aria-labelledby="exampleModalLabel"
-                             aria-hidden="true">
-                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                                <div class="modal-content">
-                                    <div class="modal-header text-center">
-                                        <h5 class="modal-title">Reason for Rejection</h5>
-                                        <button type="button" class="btn-close" data-dismiss="modal"
-                                                aria-label="Close"></button>
-                                    </div>
-                                    <form action="/complete-credit-committee" method="get">
-                                        <div class="modal-body">
-                                            <div class="form-floating mb-3 p-1">
-                                                    <textarea class="form-select" id="rejected"
-                                                              placeholder="Leave a comment here"
-                                                              style="height: 200px ; background-image: none; resize: none"></textarea>
-                                                <label for="rejected">Reason</label>
-                                            </div>
-                                            <input id="taskId" type="hidden" name="taskId">
-                                        </div>
-                                        <div class="modal-footer d-flex justify-content-around">
-                                            <button type="submit" class="btn btn-danger" data-dismiss="modal">
-                                                <i class="fa-solid fa-circle-xmark mx-1"></i>
-                                                <span>Cancel</span>
-                                            </button>
-                                            <button id="rejectedButton" type="submit" class="btn btn-success">
-                                                <i class="fa-solid fa-circle-check mx-1"></i>
-                                                <span>Confirm</span>
                                             </button>
                                         </div>
                                     </form>

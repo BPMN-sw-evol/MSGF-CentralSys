@@ -230,7 +230,7 @@ public class CreditAnalystCoupleServices {
         }
     }
     @BPMNSetterVariables()
-    public String completeTask(String processId, Boolean value) {
+    public String approveTask(String processId) {
         TaskInfo taskInfo = getTaskInfoByProcessId(processId);
 
         if (taskInfo != null) {
@@ -241,7 +241,7 @@ public class CreditAnalystCoupleServices {
             Map<String, Object> requestBody = new HashMap<>();
             Map<String, Object> variables = new HashMap<>();
             Map<String, Object> allFine = new HashMap<>();
-            allFine.put("value", value);
+            allFine.put("value", true);
             allFine.put("type", "Boolean");
             variables.put("allFine", allFine);
             requestBody.put("variables", variables);
@@ -253,18 +253,53 @@ public class CreditAnalystCoupleServices {
                 String newTaskId = getTaskIdByProcessIdWithApi(processId);
 
                 if (newTaskId != null) {
-                    if (!value) {
-                        // Update the "status" to "Draft" in the "CreditRequest" table
-                        String updateStatusQuery = "UPDATE credit_request SET status = 'DRAFT', count_reviewcr = count_reviewcr + 1 WHERE process_id = ?";
-                        try (PreparedStatement statement = connection.prepareStatement(updateStatusQuery)) {
-                            statement.setString(1, processId);
-                            setAssignee(newTaskId, "MarriedCouple");
-                        } catch (SQLException e) {
-                            return null;
-                        }
-                    }
                     updateTaskByProcessId(processId, newTaskId);
                     setAssignee(newTaskId, "CreditAnalyst");
+                }
+                return "";
+            } catch (SQLException | HttpClientErrorException e) {
+                System.err.println("Error during task completion: " + e.getMessage());
+                return null;
+            }
+        } else {
+            System.err.println("No task information found for Process ID " + processId);
+            return null;
+        }
+    }
+
+    @BPMNSetterVariables()
+    public String rejectedTask(String processId) {
+        TaskInfo taskInfo = getTaskInfoByProcessId(processId);
+
+        if (taskInfo != null) {
+            String taskId = taskInfo.getTaskId();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            Map<String, Object> requestBody = new HashMap<>();
+            Map<String, Object> variables = new HashMap<>();
+            Map<String, Object> allFine = new HashMap<>();
+            allFine.put("value", false);
+            allFine.put("type", "Boolean");
+            variables.put("allFine", allFine);
+            requestBody.put("variables", variables);
+            HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
+
+            try (Connection connection = DriverManager.getConnection("jdbc:postgresql://rds-msgf.cyrlczakjihy.us-east-1.rds.amazonaws.com:5432/credit_request", "postgres", "msgfoundation")) {
+                String camundaUrl = "http://localhost:9000/engine-rest/task/" + taskId + "/complete";
+                restTemplate.postForEntity(camundaUrl, requestEntity, Map.class);
+                String newTaskId = getTaskIdByProcessIdWithApi(processId);
+
+                if (newTaskId != null) {
+                    // Update the "status" to "Draft" in the "CreditRequest" table
+                    String updateStatusQuery = "UPDATE credit_request SET status = 'DRAFT', count_reviewcr = count_reviewcr + 1 WHERE process_id = ?";
+                    try (PreparedStatement statement = connection.prepareStatement(updateStatusQuery)) {
+                        statement.setString(1, processId);
+                        updateTaskByProcessId(processId, newTaskId);
+                        setAssignee(newTaskId, "MarriedCouple");
+                    } catch (SQLException e) {
+                        return null;
+                    }
                 }
                 return "";
             } catch (SQLException | HttpClientErrorException e) {

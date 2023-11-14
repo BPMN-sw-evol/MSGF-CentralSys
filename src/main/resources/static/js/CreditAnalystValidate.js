@@ -27,34 +27,9 @@ function fillFormFields(button) {
     document.getElementById("marriageYears").value = marriageYears;
     document.getElementById("bothEmployees").value = bothEmployees;
     document.getElementById("bothEmployees").setAttribute("readonly", "readonly");
-
-    // Obtener el contenedor del campo
-    var housePricesContainer = document.getElementById("housePricesContainer");
-    var quotaValueContainer = document.getElementById("quotaValueContainer");
-    var coupleSavingsContainer = document.getElementById("coupleSavingsContainer");
-
-
-    // Mostrar u ocultar el contenedor según el valor
-    if (housePrices ===  "0") {
-        housePricesContainer.style.display = "none";
-    } else {
-        housePricesContainer.style.display = "block";
-        document.getElementById("housePrices").value = housePrices;
-    }
-
-    if (housePrices === "0") {
-        quotaValueContainer.style.display = "none";
-    } else {
-        quotaValueContainer.style.display = "block";
-        document.getElementById("quotaValue").value = quotaValue;
-    }
-
-    if (housePrices === "0") {
-        coupleSavingsContainer.style.display = "none";
-    } else {
-        coupleSavingsContainer.style.display = "block";
-        document.getElementById("coupleSavings").value = coupleSavings;
-    }
+    document.getElementById("housePrices").value = housePrices;
+    document.getElementById("quotaValue").value = quotaValue;
+    document.getElementById("coupleSavings").value = coupleSavings;
 
 }
 
@@ -68,8 +43,7 @@ function fillFormFields(button) {
         // Agregar un controlador de clic al botón de aprobación
         approveButton.addEventListener("click", function (event) {
             event.preventDefault(); // Evitar que el formulario se envíe automáticamente
-            document.getElementById("value").value = "true";
-
+            form.action="/approve-credit-analyst-validate"
             // Mostrar la alerta con un indicador de carga al inicio del envío del formulario
             Swal.fire({
                 position: 'center',
@@ -97,7 +71,7 @@ function fillFormFields(button) {
         // Agregar un controlador de clic al botón de aprobación
         rejectedButton.addEventListener("click", function (event) {
             event.preventDefault(); // Evitar que el formulario se envíe automáticamente
-            document.getElementById("value").value = "false";
+            form.action="/rejected-credit-analyst-validate"
 
             // Mostrar la alerta con un indicador de carga al inicio del envío del formulario
             Swal.fire({

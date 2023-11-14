@@ -6,6 +6,7 @@ import com.MSGFCentralSys.MSGFCentralSys.services.CreditCommitteServices;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
@@ -44,9 +45,9 @@ public class CreditCommitteController {
         return "views/CreditCommittee";
     }
 
-    @GetMapping("/complete-credit-committee")
-    public String completeTaskCreditCommitte(@RequestParam(name = "taskId") String taskId){
-        this.camundaService.completeTask(taskId);
+    @PostMapping("/approve-credit-committee")
+    public String approveTaskCouple(@RequestParam(name = "taskId") String taskId){
+        this.camundaService.approveTask(taskId);
         return "redirect:/credit-committee";
     }
 }
