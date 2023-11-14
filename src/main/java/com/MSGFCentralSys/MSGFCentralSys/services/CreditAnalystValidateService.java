@@ -227,9 +227,14 @@ public class CreditAnalystValidateService {
             }
         }
     }
+<<<<<<< HEAD
 
     @BPMNSetterVariables()
     public String approveTask(String processId) {
+=======
+    @BPMNSetterVariables(variables = "isValid")
+    public String completeTask(String processId, Boolean value) {
+>>>>>>> bfd19d2f96150465d6d93ff7c40eb0a3fcfbdbd1
         TaskInfo taskInfo = getTaskInfoByProcessId(processId);
 
         if (taskInfo != null) {
@@ -286,20 +291,25 @@ public class CreditAnalystValidateService {
 
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
 
-            try (Connection connection = DriverManager.getConnection("jdbc:postgresql://rds-msgf.cyrlczakjihy.us-east-1.rds.amazonaws.com:5432/credit_request", "postgres", "msgfoundation")) {
-                String camundaUrl = "http://localhost:9000/engine-rest/task/" + taskId + "/complete";
-                restTemplate.postForEntity(camundaUrl, requestEntity, Map.class);
+            String camundaUrl = "http://localhost:9000/engine-rest/task/" + taskId + "/complete";
+            restTemplate.postForEntity(camundaUrl, requestEntity, Map.class);
 
-                String newTaskId = getTaskIdByProcessIdWithApi(processId);
+            String newTaskId = getTaskIdByProcessIdWithApi(processId);
 
+<<<<<<< HEAD
                 if (newTaskId != null) {
                     updateTaskByProcessId(processId, newTaskId);
+=======
+            if (newTaskId != null) {
+                updateTaskByProcessId(processId, newTaskId);
+
+                if (value) {
+                    setAssignee(newTaskId, "CreditCommittee");
+>>>>>>> bfd19d2f96150465d6d93ff7c40eb0a3fcfbdbd1
                 }
-                return null;
-            } catch (SQLException | HttpClientErrorException e) {
-                System.err.println("Error during task completion: " + e.getMessage());
-                return null;
             }
+            return null;
+
         } else {
             System.err.println("No task information found for Process ID " + processId);
             return null;
