@@ -39,9 +39,7 @@
                                     <td style="display: none" th:text="${processVariablesList.coupleEmail2}"></td>
                                     <td style="display: none" th:text="${processVariablesList.marriageYears}"></td>
                                     <td style="display: none" th:text="${processVariablesList.bothEmployees}"></td>
-                                    <td style="display: none" th:text="${processVariablesList.housePrices}"></td>
-                                    <td style="display: none" th:text="${processVariablesList.quotaValue}"></td>
-                                    <td style="display: none" th:text="${processVariablesList.coupleSavings}"></td>
+
                                     <td style="width: 20vh;">
                                         <button class="btn btn-primary" data-target="#applicationCouple" data-toggle="modal"
                                                 onclick="fillFormFields(this)" type="button">
@@ -64,7 +62,7 @@
                                                 type="button">
                                         </button>
                                     </div>
-                                    <form action="/complete-credit-analyst-couple" method="get">
+                                    <form method="post">
                                         <div class="modal-body">
                                             <div class="card-body">
                                                 <div class="card-header">
@@ -95,8 +93,6 @@
                                                                type="text">
                                                         <label for="CoupleName">Couple's Names:</label>
                                                     </div>
-
-                                                    <input id="value" name="value" type="hidden">
 
                                                     <div class="form-floating mb-3 p-1">
                                                         <input class="form-control" id="state" name="state"
@@ -146,31 +142,6 @@
                                                         </select>
                                                         <label for="bothEmployees">Both Employed:</label>
                                                     </div>
-
-                                                    <div class="form-floating mb-3 p-1" id="housePricesContainer">
-                                                        <input class="form-control" id="housePrices"
-                                                               name="housePrices"
-                                                               placeholder="Enter house prices"
-                                                               readonly
-                                                               type="number">
-                                                        <label for="housePrices" type="hidden">House Prices:</label>
-                                                    </div>
-                                                    <div class="form-floating mb-3 p-1" id="quotaValueContainer">
-                                                        <input class="form-control" id="quotaValue"
-                                                               name="quotaValue"
-                                                               placeholder="Enter quota value"
-                                                               readonly
-                                                               type="number">
-                                                        <label for="quotaValue">Quota Value:</label>
-                                                    </div>
-                                                    <div class="form-floating mb-3 p-1" id="coupleSavingsContainer">
-                                                        <input class="form-control" id="coupleSavings"
-                                                               name="coupleSavings"
-                                                               placeholder="Enter couple savings"
-                                                               readonly
-                                                               type="number">
-                                                        <label for="coupleSavings">Couple Savings:</label>
-                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
@@ -202,7 +173,7 @@
                                         <button aria-label="Close" class="btn-close" data-dismiss="modal"
                                                 type="button"></button>
                                     </div>
-                                    <form action="/complete-credit-analyst-couple" method="get">
+                                    <form method="post">
                                         <div class="modal-body">
                                             <div class="form-floating mb-3 p-1">
                                                     <textarea class="form-select" id="rejected"
@@ -211,7 +182,6 @@
                                                 <label for="rejected">Reason</label>
                                             </div>
                                             <input id="taskId" name="taskId" type="hidden">
-                                            <input id="value" name="value" type="hidden">
                                         </div>
                                         <div class="modal-footer d-flex justify-content-around">
                                             <button class="btn btn-danger" data-dismiss="modal" type="submit">
@@ -235,7 +205,7 @@
 </section>
 
 <th:block layout:fragment="page-scripts">
-    <script th:src="@{js/CreditAnalyst.js}"></script>
+    <script th:src="@{js/CreditAnalystCouple.js}"></script>
 </th:block>
 </body>
 </html>

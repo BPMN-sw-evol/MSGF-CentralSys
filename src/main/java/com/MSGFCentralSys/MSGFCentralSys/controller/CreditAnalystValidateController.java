@@ -7,6 +7,7 @@ import com.MSGFCentralSys.MSGFCentralSys.services.CreditAnalystValidateService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.io.IOException;
@@ -14,37 +15,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-public class CreditAnalystController {
+public class CreditAnalystValidateController {
 
-    private final CreditAnalystCoupleServices creditAnalystCoupleServices;
     private final CreditAnalystValidateService creditAnalystValidateService;
     List<CreditRequestDTO> processVariablesListCA = new ArrayList<>();
 
-    public CreditAnalystController(CreditAnalystCoupleServices creditAnalystCoupleServices, CreditAnalystValidateService creditAnalystValidateService) {
-        this.creditAnalystCoupleServices = creditAnalystCoupleServices;
+    public CreditAnalystValidateController(CreditAnalystValidateService creditAnalystValidateService) {
         this.creditAnalystValidateService = creditAnalystValidateService;
-    }
-
-
-    @GetMapping("/credit-analyst-couple")
-    public String CreditAnalystCoupleView(Model model) throws IOException {
-
-        List<String> processIds = this.creditAnalystCoupleServices.getAllProcessByActivityId("Activity_0h13zv2");
-        System.out.println(processIds.toString());
-        processVariablesListCA.clear();
-        // Iterar a través de los processIds y obtener las variables para cada uno
-        for (String processId : processIds) {
-            CreditRequestDTO creditRequestDTO = this.creditAnalystCoupleServices.getProcessVariablesById(processId);
-            TaskInfo taskInfo = this.creditAnalystCoupleServices.getTaskInfoByProcessId(processId);
-            creditRequestDTO.setTaskInfo(taskInfo);
-            processVariablesListCA.add(creditRequestDTO);
-        }
-
-        // Agregar la lista de variables de proceso al modelo para pasarla a la vista
-        model.addAttribute("processVariablesList", processVariablesListCA);
-        model.addAttribute("titulo", "Analyze Information Couple of Applications");
-        return "views/CreditAnalystCouple";
-
     }
 
     @GetMapping("/credit-analyst-validate")
@@ -68,15 +45,15 @@ public class CreditAnalystController {
 
     }
 
-    @GetMapping("/complete-credit-analyst-couple")
-    public String completeTaskCreditAnalystCouple(@RequestParam(name = "taskId") String taskId, @RequestParam(name="value") Boolean value){
-        this.creditAnalystCoupleServices.completeTask(taskId, value);
-        return "redirect:/credit-analyst-couple";
+    @PostMapping("/approve-credit-analyst-validate")
+    public String approveTaskValidate(@RequestParam(name = "taskId") String taskId){
+        this.creditAnalystValidateService.approveTask(taskId);
+        return "redirect:/credit-analyst-validate";
     }
 
-    @GetMapping("/complete-credit-analyst-validate")
-    public String completeTaskCreditAnalystValidate(@RequestParam(name = "taskId") String taskId, @RequestParam(name="value") Boolean value){
-        this.creditAnalystValidateService.completeTask(taskId, value);
+    @PostMapping("/rejected-credit-analyst-validate")
+    public String rejectedTaskValidate(@RequestParam(name = "taskId") String taskId){
+        this.creditAnalystValidateService.rejectedTask(taskId);
         return "redirect:/credit-analyst-validate";
     }
 }
