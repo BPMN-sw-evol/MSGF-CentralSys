@@ -1,8 +1,9 @@
 package com.MSGFCentralSys.MSGFCentralSys.services;
 
-import com.MSGFCentralSys.MSGFCentralSys.annotations.BPMNGetterVariables;
-import com.MSGFCentralSys.MSGFCentralSys.annotations.BPMNSetterVariables;
-import com.MSGFCentralSys.MSGFCentralSys.annotations.BPMNTask;
+
+import annotations.BPMNGetterVariables;
+import annotations.BPMNSetterVariables;
+import annotations.BPMNTask;
 import com.MSGFCentralSys.MSGFCentralSys.dto.CreditRequestDTO;
 import com.MSGFCentralSys.MSGFCentralSys.dto.TaskInfo;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -229,13 +230,10 @@ public class CreditAnalystCoupleServices {
             }
         }
     }
-<<<<<<< HEAD
+
     @BPMNSetterVariables()
     public String approveTask(String processId) {
-=======
-    @BPMNSetterVariables(variables = "allFine")
-    public String completeTask(String processId, Boolean value) {
->>>>>>> bfd19d2f96150465d6d93ff7c40eb0a3fcfbdbd1
+
         TaskInfo taskInfo = getTaskInfoByProcessId(processId);
 
         if (taskInfo != null) {

@@ -1,7 +1,7 @@
 package com.MSGFCentralSys.MSGFCentralSys.services;
 
-import com.MSGFCentralSys.MSGFCentralSys.annotations.BPMNGetterVariables;
-import com.MSGFCentralSys.MSGFCentralSys.annotations.BPMNSetterVariables;
+
+import annotations.*;
 import com.MSGFCentralSys.MSGFCentralSys.dto.CreditRequestDTO;
 import com.MSGFCentralSys.MSGFCentralSys.dto.TaskInfo;
 import com.fasterxml.jackson.databind.JsonNode;
@@ -16,7 +16,6 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -227,14 +226,10 @@ public class CreditAnalystValidateService {
             }
         }
     }
-<<<<<<< HEAD
 
     @BPMNSetterVariables()
     public String approveTask(String processId) {
-=======
-    @BPMNSetterVariables(variables = "isValid")
-    public String completeTask(String processId, Boolean value) {
->>>>>>> bfd19d2f96150465d6d93ff7c40eb0a3fcfbdbd1
+
         TaskInfo taskInfo = getTaskInfoByProcessId(processId);
 
         if (taskInfo != null) {
@@ -296,17 +291,9 @@ public class CreditAnalystValidateService {
 
             String newTaskId = getTaskIdByProcessIdWithApi(processId);
 
-<<<<<<< HEAD
                 if (newTaskId != null) {
                     updateTaskByProcessId(processId, newTaskId);
-=======
-            if (newTaskId != null) {
-                updateTaskByProcessId(processId, newTaskId);
 
-                if (value) {
-                    setAssignee(newTaskId, "CreditCommittee");
->>>>>>> bfd19d2f96150465d6d93ff7c40eb0a3fcfbdbd1
-                }
             }
             return null;
 

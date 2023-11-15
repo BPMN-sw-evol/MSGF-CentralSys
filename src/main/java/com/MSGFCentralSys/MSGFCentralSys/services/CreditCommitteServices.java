@@ -1,9 +1,7 @@
 package com.MSGFCentralSys.MSGFCentralSys.services;
 
-import com.MSGFCentralSys.MSGFCentralSys.annotations.BPMNGetVariables;
-import com.MSGFCentralSys.MSGFCentralSys.annotations.BPMNGetterVariables;
-import com.MSGFCentralSys.MSGFCentralSys.annotations.BPMNSetterVariables;
-import com.MSGFCentralSys.MSGFCentralSys.annotations.BPMNTask;
+
+import annotations.*;
 import com.MSGFCentralSys.MSGFCentralSys.dto.CreditRequestDTO;
 import com.MSGFCentralSys.MSGFCentralSys.dto.TaskInfo;
 import com.fasterxml.jackson.databind.JsonNode;

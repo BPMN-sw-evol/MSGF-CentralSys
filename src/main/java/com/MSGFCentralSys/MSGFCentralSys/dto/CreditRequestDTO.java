@@ -1,6 +1,7 @@
 package com.MSGFCentralSys.MSGFCentralSys.dto;
 
-import com.MSGFCentralSys.MSGFCentralSys.annotations.BPMNGetVariables;
+
+import annotations.BPMNGetVariables;
 import lombok.Data;
 
 @Data
