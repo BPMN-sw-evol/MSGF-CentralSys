@@ -23,9 +23,8 @@ public class CreditAnalystCoupleController {
         this.creditAnalystCoupleServices = creditAnalystCoupleServices;
     }
 
-
     @GetMapping("/credit-analyst-couple")
-    public String CreditAnalystCoupleView(Model model) throws IOException {
+    public String CreditAnalystCoupleView(Model model){
 
         List<String> processIds = this.creditAnalystCoupleServices.getAllProcessByActivityId("Activity_0h13zv2");
         processVariablesListCA.clear();
@@ -39,20 +38,30 @@ public class CreditAnalystCoupleController {
 
         // Agregar la lista de variables de proceso al modelo para pasarla a la vista
         model.addAttribute("processVariablesList", processVariablesListCA);
-        model.addAttribute("titulo", "Analyze Information Couple of Applications");
+        model.addAttribute("titulo", "Analyze Couple Applications Information ");
         return "views/CreditAnalystCouple";
+    }
 
+    @PostMapping("/view-credit-analyst-couple")
+    public  String viewTaskCouple(@RequestParam(name = "processId") String processId, Model model){
+        CreditRequestDTO creditRequestDTO = this.creditAnalystCoupleServices.getProcessVariablesById(processId);
+        TaskInfo taskInfo = this.creditAnalystCoupleServices.getTaskInfoByProcessId(processId);
+        creditRequestDTO.setTaskInfo(taskInfo);
+        model.addAttribute("creditRequestDTO", creditRequestDTO);
+            model.addAttribute("titulo", "Couple Application Information");
+
+        return  "modals/Couple";
     }
 
     @PostMapping("/approve-credit-analyst-couple")
-    public String approveTaskCouple(@RequestParam(name = "taskId") String taskId){
-        this.creditAnalystCoupleServices.approveTask(taskId);
+    public String approveTaskCouple(@RequestParam(name = "processId") String processId){
+        this.creditAnalystCoupleServices.approveTask(processId);
         return "redirect:/credit-analyst-couple";
     }
 
     @PostMapping("/rejected-credit-analyst-couple")
-    public String rejectedTaskCouple(@RequestParam(name = "taskId") String taskId){
-        this.creditAnalystCoupleServices.rejectedTask(taskId);
+    public String rejectedTaskCouple(@RequestParam(name = "processId") String processId){
+        this.creditAnalystCoupleServices.rejectedTask(processId);
         return "redirect:/credit-analyst-couple";
     }
 
