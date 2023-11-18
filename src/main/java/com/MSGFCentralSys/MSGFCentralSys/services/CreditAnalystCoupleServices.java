@@ -35,7 +35,7 @@ public class CreditAnalystCoupleServices {
 
     @BPMNGetterVariables(value = "Processes Instances")
     public List<String> getAllProcessByActivityId(String activityId) {
-        String url = "http://localhost:9000/engine-rest/history/activity-instance?sortBy=startTime&sortOrder=asc&activityId=" + activityId + "&finished=false&unfinished=true&withoutTenantId=false";
+        String url = "http://localhost:9000/engine-rest/history/activity-instance?sortBy=startTime&sortOrder=desc&activityId=" + activityId + "&finished=false&unfinished=true&withoutTenantId=false";
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
 
         List<String> processIds = new ArrayList<>();

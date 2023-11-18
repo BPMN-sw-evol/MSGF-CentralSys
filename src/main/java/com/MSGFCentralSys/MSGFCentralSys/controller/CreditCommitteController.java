@@ -15,23 +15,23 @@ import java.util.List;
 
 @Controller
 public class CreditCommitteController {
-    private final CreditCommitteServices camundaService;
+    private final CreditCommitteServices creditCommitteServices;
     List<CreditRequestDTO> processVariablesListCC = new ArrayList<>();
 
-    public CreditCommitteController(CreditCommitteServices camundaService) {
-        this.camundaService = camundaService;
+    public CreditCommitteController(CreditCommitteServices creditCommitteServices) {
+        this.creditCommitteServices = creditCommitteServices;
     }
 
     @GetMapping({"/credit-committee"})
     public String CreditCommitteView(Model model) throws IOException {
-        List<String> processIds = this.camundaService.getAllProcessByActivityId("Activity_14mlhta");
+        List<String> processIds = this.creditCommitteServices.getAllProcessByActivityId("Activity_14mlhta");
         processVariablesListCC.clear();
 
         // Crear una lista para almacenar información de variables de proceso
         // Iterar a través de los processIds y obtener las variables para cada uno
         for (String processId : processIds) {
-            CreditRequestDTO creditRequestDTO = this.camundaService.getProcessVariablesById(processId);
-            TaskInfo taskInfo = this.camundaService.getTaskInfoByProcessId(processId);
+            CreditRequestDTO creditRequestDTO = this.creditCommitteServices.getProcessVariablesById(processId);
+            TaskInfo taskInfo = this.creditCommitteServices.getTaskInfoByProcessId(processId);
             creditRequestDTO.setTaskInfo(taskInfo);
             System.out.println("task info: "+taskInfo.toString());
             processVariablesListCC.add(creditRequestDTO);
@@ -45,9 +45,20 @@ public class CreditCommitteController {
         return "views/CreditCommittee";
     }
 
+    @PostMapping("/view-credit-committee")
+    public  String viewTaskValidate(@RequestParam(name = "processId") String processId, Model model){
+        CreditRequestDTO creditRequestDTO = this.creditCommitteServices.getProcessVariablesById(processId);
+        TaskInfo taskInfo = this.creditCommitteServices.getTaskInfoByProcessId(processId);
+        creditRequestDTO.setTaskInfo(taskInfo);
+        model.addAttribute("creditRequestDTO", creditRequestDTO);
+        model.addAttribute("titulo", "Application Review");
+
+            return  "modals/Committee";
+    }
+
     @PostMapping("/approve-credit-committee")
-    public String approveTaskCouple(@RequestParam(name = "taskId") String taskId){
-        this.camundaService.approveTask(taskId);
+    public String approveTaskCouple(@RequestParam(name = "processId") String processId){
+        this.creditCommitteServices.approveTask(processId);
         return "redirect:/credit-committee";
     }
 }

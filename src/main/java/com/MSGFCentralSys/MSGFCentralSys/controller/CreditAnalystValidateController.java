@@ -45,15 +45,26 @@ public class CreditAnalystValidateController {
 
     }
 
+    @PostMapping("/view-credit-analyst-validate")
+    public  String viewTaskValidate(@RequestParam(name = "processId") String processId, Model model){
+        CreditRequestDTO creditRequestDTO = this.creditAnalystValidateService.getProcessVariablesById(processId);
+        TaskInfo taskInfo = this.creditAnalystValidateService.getTaskInfoByProcessId(processId);
+        creditRequestDTO.setTaskInfo(taskInfo);
+        model.addAttribute("creditRequestDTO", creditRequestDTO);
+        model.addAttribute("titulo", "Couple Application Validation ");
+
+        return  "modals/Validate";
+    }
+
     @PostMapping("/approve-credit-analyst-validate")
-    public String approveTaskValidate(@RequestParam(name = "taskId") String taskId){
-        this.creditAnalystValidateService.approveTask(taskId);
+    public String approveTaskValidate(@RequestParam(name = "processId") String processId){
+        this.creditAnalystValidateService.approveTask(processId);
         return "redirect:/credit-analyst-validate";
     }
 
     @PostMapping("/rejected-credit-analyst-validate")
-    public String rejectedTaskValidate(@RequestParam(name = "taskId") String taskId){
-        this.creditAnalystValidateService.rejectedTask(taskId);
+    public String rejectedTaskValidate(@RequestParam(name = "processId") String processId){
+        this.creditAnalystValidateService.rejectedTask(processId);
         return "redirect:/credit-analyst-validate";
     }
 }

@@ -17,187 +17,34 @@
                     <div class="card-title">
                         <h1 class="text-center text-primary" th:text="${titulo}"></h1>
                     </div>
-                    <div class="card-body">
-                        <table class="table table-striped" id="creditTable">
-                            <thead>
-                                <tr class="text-center">
-                                    <th>Instance Id</th>
-                                    <th>Couple's Names</th>
-                                    <th>Start Date</th>
-                                    <th>State</th>
-                                    <th>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr class="text-center" th:each="processVariablesList : ${processVariablesList}">
-                                    <td th:text="${processVariablesList.TaskInfo.processId}"></td>
-                                    <td th:text="${processVariablesList.coupleName1 + ' y ' + processVariablesList.coupleName2}"></td>
-                                    <td th:text="${processVariablesList.requestDate}"></td>
-                                    <td th:text="${processVariablesList.TaskInfo.taskName}"></td>
-                                    <td style="display: none" th:text="${processVariablesList.countReviewsCS}"></td>
-                                    <td style="display: none" th:text="${processVariablesList.coupleEmail1}"></td>
-                                    <td style="display: none" th:text="${processVariablesList.coupleEmail2}"></td>
-                                    <td style="display: none" th:text="${processVariablesList.marriageYears}"></td>
-                                    <td style="display: none" th:text="${processVariablesList.bothEmployees}"></td>
+                </div>
 
-                                    <td style="width: 20vh;">
-                                        <button class="btn btn-primary" data-target="#applicationCouple" data-toggle="modal"
-                                                onclick="fillFormFields(this)" type="button">
-                                            <i class="fa-solid fa-magnifying-glass mx-1"></i>
-                                            <span>Review</span>
-                                        </button>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade"
-                             id="applicationCouple"
-                             tabindex="-1">
-                            <div class="modal-dialog modal-lg modal-dialog-centered modal-dialog-scrollable">
-                                <div class="modal-content">
-                                    <div class="modal-header text-center">
-                                        <h5 class="modal-title">Application</h5>
-                                        <button aria-label="Close" class="btn-close" data-dismiss="modal"
-                                                type="button">
-                                        </button>
-                                    </div>
-                                    <form method="post">
-                                        <div class="modal-body">
-                                            <div class="card-body">
-                                                <div class="card-header">
-                                                    <div class="card-title">
-                                                        <h1 class="text-center">Credit Information</h1>
-                                                    </div>
-                                                </div>
-                                                <div class="card-body">
-                                                    <div class="form-floating mb-3 p-1">
-                                                        <input class="form-control" id="taskId" name="taskId"
-                                                               readonly
-                                                               type="text">
-                                                        <label for="taskId">process Id:</label>
-                                                    </div>
-
-                                                    <div class="form-floating mb-3 p-1">
-                                                        <input class="form-control" id="countReviewsCS"
-                                                               name="countReviewsCS"
-                                                               readonly
-                                                               type="text">
-                                                        <label for="countReviewsCS">Count Review:</label>
-                                                    </div>
-
-                                                    <div class="form-floating mb-3 p-1">
-                                                        <input class="form-control" id="CoupleName"
-                                                               name="CoupleName"
-                                                               readonly
-                                                               type="text">
-                                                        <label for="CoupleName">Couple's Names:</label>
-                                                    </div>
-
-                                                    <div class="form-floating mb-3 p-1">
-                                                        <input class="form-control" id="state" name="state"
-                                                               readonly
-                                                               type="text">
-                                                        <label for="state">State:</label>
-                                                    </div>
-
-                                                    <div class="form-floating mb-3 p-1">
-                                                        <input class="form-control" id="requestDate"
-                                                               name="requestDate"
-                                                               readonly
-                                                               type="text">
-                                                        <label for="requestDate">Start Date:</label>
-                                                    </div>
-
-                                                    <div class="form-floating mb-3 p-1">
-                                                        <input class="form-control" id="coupleEmail1"
-                                                               name="coupleEmail1"
-                                                               readonly
-                                                               type="text">
-                                                        <label for="coupleEmail1">Couple Email 1:</label>
-                                                    </div>
-
-                                                    <div class="form-floating mb-3 p-1">
-                                                        <input class="form-control" id="coupleEmail2"
-                                                               name="coupleEmail2"
-                                                               readonly
-                                                               type="text">
-                                                        <label for="coupleEmail2">Couple Email 2:</label>
-                                                    </div>
-
-                                                    <div class="form-floating mb-3 p-1">
-                                                        <input class="form-control" id="marriageYears"
-                                                               name="processVariablesList.marriageYears"
-                                                               readonly
-                                                               type="number">
-                                                        <label for="marriageYears">Years of Marriage:</label>
-                                                    </div>
-                                                    <div class="form-floating mb-3 p-1">
-                                                        <select class="form-select" disabled
-                                                                id="bothEmployees" name="bothEmployees">
-                                                            <option disabled selected value="">Both are employed?
-                                                            </option>
-                                                            <option value="true">Yes</option>
-                                                            <option value="false">No</option>
-                                                        </select>
-                                                        <label for="bothEmployees">Both Employed:</label>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="modal-footer d-flex justify-content-around">
-                                            <button class="btn btn-danger" data-target="#applicationRejectedCouple"
-                                                    data-toggle="modal"
-                                                    type="button">
-                                                <i class="fa-solid fa-circle-xmark mx-1"></i>
-                                                <span>Rejected</span>
-                                            </button>
-                                            <button class="btn btn-success" id="approveButton" type="submit">
-                                                <i class="fa-solid fa-circle-check mx-1"></i>
-                                                <span>Approve</span>
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade"
-                             id="applicationRejectedCouple"
-                             tabindex="-1">
-                            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                                <div class="modal-content">
-                                    <div class="modal-header text-center">
-                                        <h5 class="modal-title">Reason for Rejection</h5>
-                                        <button aria-label="Close" class="btn-close" data-dismiss="modal"
-                                                type="button"></button>
-                                    </div>
-                                    <form method="post">
-                                        <div class="modal-body">
-                                            <div class="form-floating mb-3 p-1">
-                                                    <textarea class="form-select" id="rejected"
-                                                              placeholder="Leave a comment here"
-                                                              style="height: 200px ; background-image: none; resize: none"></textarea>
-                                                <label for="rejected">Reason</label>
-                                            </div>
-                                            <input id="taskId" name="taskId" type="hidden">
-                                        </div>
-                                        <div class="modal-footer d-flex justify-content-around">
-                                            <button class="btn btn-danger" data-dismiss="modal" type="submit">
-                                                <i class="fa-solid fa-circle-xmark mx-1"></i>
-                                                <span>Cancel</span>
-                                            </button>
-                                            <button class="btn btn-success" id="rejectedButton" type="submit">
-                                                <i class="fa-solid fa-circle-check mx-1"></i>
-                                                <span>Confirm</span>
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <div class="card-body">
+                    <table class="table table-striped" id="creditTable">
+                        <thead>
+                        <tr class="text-center">
+                            <th>Instance Id</th>
+                            <th>Couple's Names</th>
+                            <th>Start Date</th>
+                            <th>State</th>
+                            <th>Action</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr class="text-center" th:each="processVariablesList : ${processVariablesList}">
+                            <td th:text="${processVariablesList.TaskInfo.processId}"></td>
+                            <td th:text="${processVariablesList.coupleName1 + ' y ' + processVariablesList.coupleName2}"></td>
+                            <td th:text="${processVariablesList.requestDate}"></td>
+                            <td th:text="${processVariablesList.TaskInfo.taskName}"></td>
+                            <td style="width: 20vh;">
+                                <button type="button" class="btn btn-primary" onclick="fillFormFields(this)">
+                                    <i class="fa-solid fa-magnifying-glass mx-1"></i>
+                                    <span>Review</span>
+                                </button>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
                 </div>
             </div>
         </div>
@@ -205,7 +52,7 @@
 </section>
 
 <th:block layout:fragment="page-scripts">
-    <script th:src="@{js/CreditAnalystCouple.js}"></script>
+    <script th:src="@{js/views/CreditAnalystCouple.js}"></script>
 </th:block>
 </body>
 </html>

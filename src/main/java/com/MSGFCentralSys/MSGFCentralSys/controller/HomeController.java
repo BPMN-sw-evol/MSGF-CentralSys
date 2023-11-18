@@ -10,7 +10,7 @@ public class HomeController {
     @GetMapping({"/home","/"})
     public String mainView(Model model) {
         model.addAttribute("titulo","Welcome to the MsgFoundation's CENTRAL SYS");
-        return "init";
+        return "views/init";
     }
 
 }
