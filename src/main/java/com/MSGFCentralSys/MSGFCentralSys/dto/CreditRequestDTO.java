@@ -5,7 +5,8 @@ import annotations.BPMNGetVariables;
 import lombok.Data;
 
 @Data
-@BPMNGetVariables(variables = {"coupleName1", "coupleName2", "marriageYears", "bothEmployees", "housePrices", "quotaValue", "coupleSavings", "requestDate"})
+@BPMNGetVariables(variables =
+        {"coupleName1", "coupleName2", "marriageYears", "bothEmployees", "housePrices", "quotaValue", "coupleSavings", "requestDate"})
 public class CreditRequestDTO {
     private String coupleName1;
     private String coupleName2;
