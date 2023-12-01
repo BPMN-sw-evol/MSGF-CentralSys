@@ -2,14 +2,14 @@ package com.MSGFCentralSys.MSGFCentralSys.services;
 
 
 
+import annotations.BPMNGetVariables;
 import com.MSGFCentralSys.MSGFCentralSys.dto.CreditRequestDTO;
 import com.MSGFCentralSys.MSGFCentralSys.dto.TaskInfo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.msgfoundation.annotations.BPMNGetVariables;
-import com.msgfoundation.annotations.BPMNGetterVariables;
-import com.msgfoundation.annotations.BPMNSetterVariables;
-import com.msgfoundation.annotations.BPMNTask;
+import annotations.BPMNGetterVariables;
+import annotations.BPMNSetterVariables;
+import annotations.BPMNTask;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -235,7 +235,7 @@ public class CreditCommitteServices {
         }
     }
 
-    @BPMNSetterVariables()
+    @BPMNSetterVariables(variables = "financialViability")
     public String approveTask(String processId) {
         TaskInfo taskInfo = getTaskInfoByProcessId(processId);
 
