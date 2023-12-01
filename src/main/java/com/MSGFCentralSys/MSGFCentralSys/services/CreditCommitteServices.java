@@ -21,7 +21,7 @@ import java.io.IOException;
 import java.util.*;
 
 @Service
-@BPMNTask(type = "UserTask",name = "Verificar si el crédito tiene viabilidad financiera")
+@BPMNTask(type = "UserTask",name = "Verificar viabilidad financiera")
 public class CreditCommitteServices {
     @BPMNGetVariables()
     private TaskInfo taskInfo;
@@ -35,7 +35,7 @@ public class CreditCommitteServices {
         this.restTemplate = restTemplate;
     }
 
-    @BPMNGetterVariables(value = "Processes Instances")
+    //@BPMNGetterVariables(value = "Processes Instances")
     public List<String> getAllProcessByActivityId(String activityId) {
         String url = "http://localhost:9000/engine-rest/history/activity-instance?sortBy=startTime&sortOrder=desc&activityId=" + activityId + "&finished=false&unfinished=true&withoutTenantId=false";
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);

@@ -2,7 +2,6 @@ package com.MSGFCentralSys.MSGFCentralSys.controller;
 
 import com.MSGFCentralSys.MSGFCentralSys.dto.CreditRequestDTO;
 import com.MSGFCentralSys.MSGFCentralSys.dto.TaskInfo;
-import com.MSGFCentralSys.MSGFCentralSys.services.CreditAnalystCoupleServices;
 import com.MSGFCentralSys.MSGFCentralSys.services.CreditAnalystValidateService;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -62,9 +61,9 @@ public class CreditAnalystValidateController {
         return "redirect:/credit-analyst-validate";
     }
 
-    @PostMapping("/rejected-credit-analyst-validate")
-    public String rejectedTaskValidate(@RequestParam(name = "processId") String processId){
-        this.creditAnalystValidateService.rejectedTask(processId);
+    @PostMapping("/reject-credit-analyst-validate")
+    public String rejectTaskValidate(@RequestParam(name = "processId") String processId){
+        this.creditAnalystValidateService.rejectTask(processId);
         return "redirect:/credit-analyst-validate";
     }
 }

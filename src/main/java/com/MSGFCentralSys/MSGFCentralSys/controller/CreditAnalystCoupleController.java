@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,14 +41,13 @@ public class CreditAnalystCoupleController {
         return "views/CreditAnalystCouple";
     }
 
-    @PostMapping("/view-credit-analyst-couple")
+    @PostMapping("/view-creditcredit-analyst-couple")
     public  String viewTaskCouple(@RequestParam(name = "processId") String processId, Model model){
         CreditRequestDTO creditRequestDTO = this.creditAnalystCoupleServices.getProcessVariablesById(processId);
         TaskInfo taskInfo = this.creditAnalystCoupleServices.getTaskInfoByProcessId(processId);
         creditRequestDTO.setTaskInfo(taskInfo);
         model.addAttribute("creditRequestDTO", creditRequestDTO);
             model.addAttribute("titulo", "Couple Application Information");
-
         return  "modals/Couple";
     }
 
@@ -59,9 +57,9 @@ public class CreditAnalystCoupleController {
         return "redirect:/credit-analyst-couple";
     }
 
-    @PostMapping("/rejected-credit-analyst-couple")
-    public String rejectedTaskCouple(@RequestParam(name = "processId") String processId){
-        this.creditAnalystCoupleServices.rejectedTask(processId);
+    @PostMapping("/reject-credit-analyst-couple")
+    public String rejectTaskCouple(@RequestParam(name = "processId") String processId){
+        this.creditAnalystCoupleServices.rejectTask(processId);
         return "redirect:/credit-analyst-couple";
     }
 

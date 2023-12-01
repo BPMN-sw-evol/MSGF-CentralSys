@@ -270,7 +270,7 @@ public class CreditAnalystValidateService {
     }
 
     @BPMNSetterVariables()
-    public String rejectedTask(String processId) {
+    public String rejectTask(String processId) {
         TaskInfo taskInfo = getTaskInfoByProcessId(processId);
 
         if (taskInfo != null) {
