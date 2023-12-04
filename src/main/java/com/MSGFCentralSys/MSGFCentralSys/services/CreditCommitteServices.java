@@ -1,15 +1,10 @@
 package com.MSGFCentralSys.MSGFCentralSys.services;
 
-
-
-import annotations.BPMNGetVariables;
 import com.MSGFCentralSys.MSGFCentralSys.dto.CreditRequestDTO;
 import com.MSGFCentralSys.MSGFCentralSys.dto.TaskInfo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import annotations.BPMNGetterVariables;
-import annotations.BPMNSetterVariables;
-import annotations.BPMNTask;
+import com.msgfoundation.annotations.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
@@ -62,7 +57,7 @@ public class CreditCommitteServices {
         return processIds;
     }
 
-    @BPMNGetterVariables(value = "CreditRequestDTO")
+    @BPMNGetterVariables(variables = "CreditRequestDTO")
     public CreditRequestDTO getProcessVariablesById(String processId) {
         String CAMUNDA_API_URL = "http://localhost:9000/engine-rest/";
         String camundaURL = CAMUNDA_API_URL + "process-instance/" + processId + "/variables?deserializeValues=true";
@@ -80,46 +75,57 @@ public class CreditCommitteServices {
         if (variablesMap != null) {
             CreditRequestDTO creditRequest = new CreditRequestDTO();
             Map<String, Object> coupleName1Map = (Map<String, Object>) variablesMap.get("coupleName1");
+            @BPMNGetVariables(variables = "coupleName1")
             String coupleName1Value = (String) coupleName1Map.get("value");
             creditRequest.setCoupleName1(coupleName1Value);
 
             Map<String, Object> coupleName2Map = (Map<String, Object>) variablesMap.get("coupleName2");
+            @BPMNGetVariables(variables = "coupleName2")
             String coupleName2Value = (String) coupleName2Map.get("value");
             creditRequest.setCoupleName2(coupleName2Value);
 
             Map<String, Object> marriageYearsMap = (Map<String, Object>) variablesMap.get("marriageYears");
+            @BPMNGetVariables(variables = "marriageYears")
             Integer marriageYearsValue = (Integer) marriageYearsMap.get("value");
             creditRequest.setMarriageYears(marriageYearsValue.longValue());
 
             Map<String, Object> bothEmployeesMap = (Map<String, Object>) variablesMap.get("bothEmployees");
+            @BPMNGetVariables(variables = "bothEmployees")
             Boolean bothEmployeesValue = (Boolean) bothEmployeesMap.get("value");
             creditRequest.setBothEmployees(bothEmployeesValue);
 
             Map<String, Object> housePricesMap = (Map<String, Object>) variablesMap.getOrDefault("housePrices", Collections.singletonMap("value", 0));
+            @BPMNGetVariables(variables = "housePrices")
             Integer housePricesValue = (Integer) housePricesMap.get("value");
             creditRequest.setHousePrices(housePricesValue != null ? housePricesValue.longValue() : 0);
 
             Map<String, Object> quotaValueMap = (Map<String, Object>) variablesMap.getOrDefault("quotaValue", Collections.singletonMap("value", 0));
+            @BPMNGetVariables(variables = "quotaValue")
             Integer quotaValueValue = (Integer) quotaValueMap.get("value");
             creditRequest.setQuotaValue(quotaValueValue != null ? quotaValueValue.longValue() : 0);
 
             Map<String, Object> coupleSavingsMap = (Map<String, Object>) variablesMap.getOrDefault("coupleSavings", Collections.singletonMap("value", 0));
+            @BPMNGetVariables(variables = "coupleSavings")
             Integer coupleSavingsValue = (Integer) coupleSavingsMap.get("value");
             creditRequest.setCoupleSavings(coupleSavingsValue != null ? coupleSavingsValue.longValue() : 0);
 
             Map<String, Object> requestDateMap = (Map<String, Object>) variablesMap.get("creationDate");
+            @BPMNGetVariables(variables = "creationDate")
             String requestDateValue = (String) requestDateMap.get("value");
             creditRequest.setRequestDate(requestDateValue);
 
             Map<String, Object> coupleEmail1Map = (Map<String, Object>) variablesMap.get("coupleEmail1");
+            @BPMNGetVariables(variables = "coupleEmail1")
             String coupleEmail1Value = (String) coupleEmail1Map.get("value");
             creditRequest.setCoupleEmail1(coupleEmail1Value);
 
             Map<String, Object> coupleEmail2Map = (Map<String, Object>) variablesMap.get("coupleEmail2");
+            @BPMNGetVariables(variables = "coupleEmail2")
             String coupleEmail2Value = (String) coupleEmail2Map.get("value");
             creditRequest.setCoupleEmail2(coupleEmail2Value);
 
             Map<String, Object> countReviewsCSMap = (Map<String, Object>) variablesMap.getOrDefault("countReviewsBpm", Collections.singletonMap("value", 0));
+            @BPMNGetVariables(variables = "countReviewsBpm")
             Integer countReviewsCSValue = (Integer) countReviewsCSMap.get("value");
             creditRequest.setCountReviewsCS(countReviewsCSValue != null ? countReviewsCSValue.longValue() : 0);
 
@@ -151,7 +157,7 @@ public class CreditCommitteServices {
         }
     }
 
-    @BPMNGetterVariables(value = "TaskInfo")
+    @BPMNGetterVariables(variables = "TaskInfo")
     public TaskInfo getTaskInfoByProcessId(String processId) {
         // Construir la URL para consultar las tareas relacionadas con el proceso
         String camundaUrl = "http://localhost:9000/engine-rest/task?processInstanceId=" + processId;
@@ -194,7 +200,7 @@ public class CreditCommitteServices {
         }
     }
 
-    @BPMNGetterVariables(value = "taskId")
+    @BPMNGetterVariables(variables = "taskId")
     public String getTaskIdByProcessIdWithApi(String processId) {
         String camundaUrl = "http://localhost:9000/engine-rest/task?processInstanceId=" + processId;
 
@@ -216,7 +222,7 @@ public class CreditCommitteServices {
         }
     }
 
-    @BPMNGetterVariables(value = "taskName")
+    @BPMNGetterVariables(variables = "taskName")
     public String getTaskNameByProcessId(String processId) {
         for (TaskInfo taskInfo : tasksList) {
             if (taskInfo.getProcessId().equals(processId)) {
