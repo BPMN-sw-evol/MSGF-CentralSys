@@ -60,6 +60,11 @@
 			<artifactId>postgresql</artifactId>
 			<scope>runtime</scope>
 		</dependency>
+	 <dependency>
+	  <groupId>com.msgfoundation</groupId>
+	  <artifactId>annotations-library</artifactId>
+	  <version>1.0-SNAPSHOT</version>
+	 </dependency>
 	</dependencies>
 
 	<build>

@@ -57,8 +57,7 @@ public class CreditCommitteServices {
         return processIds;
     }
 
-    @BPMNGetterVariables(variables = "CreditRequestDTO")
-    @BPMNContainer(variables="....")
+    @BPMNGetterVariables(container = "CreditRequestDTO",variables = {"coupleName1", "coupleName2", "coupleEmail1", "coupleEmail2", "marriageYears", "bothEmployees", "housePrices", "quotaValue", "coupleSavings", "countReviewsBpm"})
     public CreditRequestDTO getProcessVariablesById(String processId) {
         String CAMUNDA_API_URL = "http://localhost:9000/engine-rest/";
         String camundaURL = CAMUNDA_API_URL + "process-instance/" + processId + "/variables?deserializeValues=true";
