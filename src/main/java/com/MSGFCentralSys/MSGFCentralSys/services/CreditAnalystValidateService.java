@@ -31,7 +31,6 @@ public class CreditAnalystValidateService {
         this.restTemplate = restTemplate;
     }
 
-    @BPMNGetterVariables(variables = "Processes Instances")
     public List<String> getAllProcessByActivityId(String activityId) {
         String url = "http://localhost:9000/engine-rest/history/activity-instance?sortBy=startTime&sortOrder=desc&activityId=" + activityId + "&finished=false&unfinished=true&withoutTenantId=false";
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
@@ -58,7 +57,7 @@ public class CreditAnalystValidateService {
         return processIds;
     }
 
-    @BPMNGetterVariables(container = "CreditRequestDTO",variables = {"coupleName1", "coupleName2", "coupleEmail1", "coupleEmail2", "marriageYears", "bothEmployees", "housePrices", "quotaValue", "coupleSavings", "countReviewsBpm"})
+    @BPMNGetterVariables(container = "CreditRequestDTO", variables = {"coupleName1", "coupleName2", "coupleEmail1", "coupleEmail2", "marriageYears", "bothEmployees", "housePrices", "quotaValue", "coupleSavings", "countReviewsBpm"})
     public CreditRequestDTO getProcessVariablesById(String processId) {
         String CAMUNDA_API_URL = "http://localhost:9000/engine-rest/";
         String camundaURL = CAMUNDA_API_URL + "process-instance/" + processId + "/variables?deserializeValues=true";
@@ -126,7 +125,6 @@ public class CreditAnalystValidateService {
         }
     }
 
-    @BPMNSetterVariables(variables = "assignee")
     public void setAssignee(String taskId, String userId) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -147,7 +145,6 @@ public class CreditAnalystValidateService {
         }
     }
 
-    @BPMNGetterVariables(variables = "TaskInfo")
     public TaskInfo getTaskInfoByProcessId(String processId) {
         // Construir la URL para consultar las tareas relacionadas con el proceso
         String camundaUrl = "http://localhost:9000/engine-rest/task?processInstanceId=" + processId;
@@ -190,7 +187,6 @@ public class CreditAnalystValidateService {
         }
     }
 
-    @BPMNGetterVariables(variables = "taskId")
     public String getTaskIdByProcessIdWithApi(String processId) {
         String camundaUrl = "http://localhost:9000/engine-rest/task?processInstanceId=" + processId;
 
@@ -211,7 +207,7 @@ public class CreditAnalystValidateService {
             return null;
         }
     }
-    @BPMNGetterVariables(variables = "taskName")
+
     public String getTaskNameByProcessId(String processId) {
         for (TaskInfo taskInfo : tasksList) {
             if (taskInfo.getProcessId().equals(processId)) {
@@ -220,7 +216,7 @@ public class CreditAnalystValidateService {
         }
         return null;
     }
-    @BPMNSetterVariables(variables = "taskInfo")
+
     public void updateTaskByProcessId(String processId, String taskId) {
         for (TaskInfo taskInfo : tasksList) {
             if (taskInfo.getProcessId().equals(processId)) {

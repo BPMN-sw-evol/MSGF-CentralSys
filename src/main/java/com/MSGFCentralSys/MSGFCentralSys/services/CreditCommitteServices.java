@@ -18,10 +18,6 @@ import java.util.*;
 @Service
 @BPMNTask(type = "UserTask",name = "Verificar viabilidad financiera")
 public class CreditCommitteServices {
-    @BPMNGetVariables()
-    private TaskInfo taskInfo;
-    @BPMNGetVariables()
-    private CreditRequestDTO creditRequestDTO;
     private final RestTemplate restTemplate;
     private List<TaskInfo> tasksList = new ArrayList<>();
 
@@ -30,7 +26,6 @@ public class CreditCommitteServices {
         this.restTemplate = restTemplate;
     }
 
-    //@BPMNGetterVariables(value = "Processes Instances")
     public List<String> getAllProcessByActivityId(String activityId) {
         String url = "http://localhost:9000/engine-rest/history/activity-instance?sortBy=startTime&sortOrder=desc&activityId=" + activityId + "&finished=false&unfinished=true&withoutTenantId=false";
         ResponseEntity<String> responseEntity = restTemplate.getForEntity(url, String.class);
@@ -57,7 +52,7 @@ public class CreditCommitteServices {
         return processIds;
     }
 
-    @BPMNGetterVariables(container = "CreditRequestDTO",variables = {"coupleName1", "coupleName2", "coupleEmail1", "coupleEmail2", "marriageYears", "bothEmployees", "housePrices", "quotaValue", "coupleSavings", "countReviewsBpm"})
+    @BPMNGetterVariables(container = "CreditRequestDTO", variables = {"coupleName1", "coupleName2", "coupleEmail1", "coupleEmail2", "marriageYears", "bothEmployees", "housePrices", "quotaValue", "coupleSavings", "countReviewsBpm"})
     public CreditRequestDTO getProcessVariablesById(String processId) {
         String CAMUNDA_API_URL = "http://localhost:9000/engine-rest/";
         String camundaURL = CAMUNDA_API_URL + "process-instance/" + processId + "/variables?deserializeValues=true";
@@ -124,29 +119,7 @@ public class CreditCommitteServices {
             return null; // Devolver null si no se encontraron variables
         }
     }
-
-    @BPMNSetterVariables(variables = "assignee")
-    public void setAssignee(String taskId, String userId) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("userId", userId);
-
-        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
-
-        String camundaUrl = "http://localhost:9000/engine-rest/task/" + taskId + "/assignee";
-
-        try {
-            ResponseEntity<String> response = restTemplate.exchange(camundaUrl, HttpMethod.POST, requestEntity, String.class);
-            System.out.println("Assignee set successfully");
-        } catch (HttpClientErrorException e) {
-            String errorMessage = e.getResponseBodyAsString();
-            System.err.println("Error in the Camunda request: " + errorMessage);
-        }
-    }
-
-    @BPMNGetterVariables(variables = "TaskInfo")
+    
     public TaskInfo getTaskInfoByProcessId(String processId) {
         // Construir la URL para consultar las tareas relacionadas con el proceso
         String camundaUrl = "http://localhost:9000/engine-rest/task?processInstanceId=" + processId;
@@ -189,7 +162,6 @@ public class CreditCommitteServices {
         }
     }
 
-    @BPMNGetterVariables(variables = "taskId")
     public String getTaskIdByProcessIdWithApi(String processId) {
         String camundaUrl = "http://localhost:9000/engine-rest/task?processInstanceId=" + processId;
 
@@ -211,7 +183,6 @@ public class CreditCommitteServices {
         }
     }
 
-    @BPMNGetterVariables(variables = "taskName")
     public String getTaskNameByProcessId(String processId) {
         for (TaskInfo taskInfo : tasksList) {
             if (taskInfo.getProcessId().equals(processId)) {
@@ -221,7 +192,6 @@ public class CreditCommitteServices {
         return null;
     }
 
-    @BPMNSetterVariables(variables = "taskInfo")
     public void updateTaskByProcessId(String processId, String taskId) {
         for (TaskInfo taskInfo : tasksList) {
             if (taskInfo.getProcessId().equals(processId)) {
