@@ -1,11 +1,13 @@
 package com.MSGFCentralSys.MSGFCentralSys.services;
 
-import com.msgfoundation.annotations.*;
 import com.MSGFCentralSys.MSGFCentralSys.dto.CreditRequestDTO;
 import com.MSGFCentralSys.MSGFCentralSys.dto.TaskInfo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.msgfoundation.annotations.BPMNGetterVariables;
+import com.msgfoundation.annotations.BPMNSetterVariables;
+import com.msgfoundation.annotations.BPMNTask;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -13,22 +15,14 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
 import java.util.*;
 
 @Service
-@BPMNTask(type = "UserTask",name = "Revisar información pareja")
-public class CreditAnalystCoupleServices {
+@BPMNTask(type = "UserTask",name = "Aprobar proceso de pago")
+@RequiredArgsConstructor
+public class TreasuryServices {
     private final RestTemplate restTemplate;
     private List<TaskInfo> tasksList = new ArrayList<>();
-
-    @Autowired
-    public CreditAnalystCoupleServices(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-    }
 
     public List<String> getAllProcessByActivityId(String activityId) {
         String url = "http://localhost:9000/engine-rest/history/activity-instance?sortBy=startTime&sortOrder=desc&activityId=" + activityId + "&finished=false&unfinished=true&withoutTenantId=false";
@@ -124,26 +118,6 @@ public class CreditAnalystCoupleServices {
         }
     }
 
-    public void setAssignee(String taskId, String userId) {
-        HttpHeaders headers = new HttpHeaders();
-        headers.setContentType(MediaType.APPLICATION_JSON);
-
-        Map<String, Object> requestBody = new HashMap<>();
-        requestBody.put("userId", userId);
-
-        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
-
-        String camundaUrl = "http://localhost:9000/engine-rest/task/" + taskId + "/assignee";
-
-        try {
-            ResponseEntity<String> response = restTemplate.exchange(camundaUrl, HttpMethod.POST, requestEntity, String.class);
-            System.out.println("Assignee set successfully");
-        } catch (HttpClientErrorException e) {
-            String errorMessage = e.getResponseBodyAsString();
-            System.err.println("Error in the Camunda request: " + errorMessage);
-        }
-    }
-
     public TaskInfo getTaskInfoByProcessId(String processId) {
         // Construir la URL para consultar las tareas relacionadas con el proceso
         String camundaUrl = "http://localhost:9000/engine-rest/task?processInstanceId=" + processId;
@@ -224,9 +198,8 @@ public class CreditAnalystCoupleServices {
         }
     }
 
-    @BPMNSetterVariables(variables = "allFine")
+    @BPMNSetterVariables(variables = "financialViability")
     public String approveTask(String processId) {
-
         TaskInfo taskInfo = getTaskInfoByProcessId(processId);
 
         if (taskInfo != null) {
@@ -235,71 +208,20 @@ public class CreditAnalystCoupleServices {
             headers.setContentType(MediaType.APPLICATION_JSON);
 
             Map<String, Object> requestBody = new HashMap<>();
-            Map<String, Object> variables = new HashMap<>();
-            Map<String, Object> allFine = new HashMap<>();
-            allFine.put("value", true);
-            allFine.put("type", "Boolean");
-            variables.put("allFine", allFine);
-            requestBody.put("variables", variables);
-            HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
+            HttpEntity<Map> requestEntity = new HttpEntity<>(requestBody, headers);
 
-            try (Connection connection = DriverManager.getConnection("jdbc:postgresql://rds-msgf.cyrlczakjihy.us-east-1.rds.amazonaws.com:5432/credit_request", "postgres", "msgfoundation")) {
+            try {
                 String camundaUrl = "http://localhost:9000/engine-rest/task/" + taskId + "/complete";
                 restTemplate.postForEntity(camundaUrl, requestEntity, Map.class);
                 String newTaskId = getTaskIdByProcessIdWithApi(processId);
 
                 if (newTaskId != null) {
                     updateTaskByProcessId(processId, newTaskId);
-                    setAssignee(newTaskId, "CreditAnalyst");
                 }
                 return "";
-            } catch (SQLException | HttpClientErrorException e) {
-                System.err.println("Error during task completion: " + e.getMessage());
-                return null;
-            }
-        } else {
-            System.err.println("No task information found for Process ID " + processId);
-            return null;
-        }
-    }
-
-    @BPMNSetterVariables(variables = "allFine")
-    public String rejectTask(String processId) {
-        TaskInfo taskInfo = getTaskInfoByProcessId(processId);
-
-        if (taskInfo != null) {
-            String taskId = taskInfo.getTaskId();
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_JSON);
-
-            Map<String, Object> requestBody = new HashMap<>();
-            Map<String, Object> variables = new HashMap<>();
-            Map<String, Object> allFine = new HashMap<>();
-            allFine.put("value", false);
-            allFine.put("type", "Boolean");
-            variables.put("allFine", allFine);
-            requestBody.put("variables", variables);
-            HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
-
-            try (Connection connection = DriverManager.getConnection("jdbc:postgresql://rds-msgf.cyrlczakjihy.us-east-1.rds.amazonaws.com:5432/credit_request", "postgres", "msgfoundation")) {
-                String camundaUrl = "http://localhost:9000/engine-rest/task/" + taskId + "/complete";
-                restTemplate.postForEntity(camundaUrl, requestEntity, Map.class);
-                String newTaskId = getTaskIdByProcessIdWithApi(processId);
-
-                if (newTaskId != null) {
-                    // Update the "status" to "Draft" in the "CreditRequest" table
-                    String updateStatusQuery = "UPDATE credit_request SET status = 'DRAFT', count_reviewcr = count_reviewcr + 1 WHERE process_id = ?";
-                    try (PreparedStatement statement = connection.prepareStatement(updateStatusQuery)) {
-                        statement.setString(1, processId);
-                        updateTaskByProcessId(processId, newTaskId);
-                        setAssignee(newTaskId, "MarriedCouple");
-                    } catch (SQLException e) {
-                        return null;
-                    }
-                }
-                return "";
-            } catch (SQLException | HttpClientErrorException e) {
-                System.err.println("Error during task completion: " + e.getMessage());
+            } catch (HttpClientErrorException e) {
+                String errorMessage = e.getResponseBodyAsString();
+                System.err.println("Error during task completion: " + errorMessage);
                 return null;
             }
         } else {

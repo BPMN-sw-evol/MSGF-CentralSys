@@ -3,6 +3,7 @@ package com.MSGFCentralSys.MSGFCentralSys.controller;
 import com.MSGFCentralSys.MSGFCentralSys.dto.CreditRequestDTO;
 import com.MSGFCentralSys.MSGFCentralSys.dto.TaskInfo;
 import com.MSGFCentralSys.MSGFCentralSys.services.CreditCommitteServices;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,13 +15,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
+@RequiredArgsConstructor
 public class CreditCommitteController {
     private final CreditCommitteServices creditCommitteServices;
     List<CreditRequestDTO> processVariablesListCC = new ArrayList<>();
-
-    public CreditCommitteController(CreditCommitteServices creditCommitteServices) {
-        this.creditCommitteServices = creditCommitteServices;
-    }
 
     @GetMapping({"/credit-committee"})
     public String CreditCommitteView(Model model) throws IOException {

@@ -1,13 +1,13 @@
 package com.MSGFCentralSys.MSGFCentralSys.services;
 
-
-
 import com.MSGFCentralSys.MSGFCentralSys.dto.CreditRequestDTO;
 import com.MSGFCentralSys.MSGFCentralSys.dto.TaskInfo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.msgfoundation.annotations.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.msgfoundation.annotations.BPMNGetterVariables;
+import com.msgfoundation.annotations.BPMNSetterVariables;
+import com.msgfoundation.annotations.BPMNTask;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -17,19 +17,16 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
 
 @Service
-@BPMNTask(type = "UserTask",name = "Verificar validez")
-public class CreditAnalystValidateService {
+@BPMNTask(type = "UserTask",name = "Revisar soportes de solicitud")
+@RequiredArgsConstructor
+public class LegalOfficeSupportsServices {
     private final RestTemplate restTemplate;
     private List<TaskInfo> tasksList = new ArrayList<>();
-
-    @Autowired
-    public CreditAnalystValidateService(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-    }
 
     public List<String> getAllProcessByActivityId(String activityId) {
         String url = "http://localhost:9000/engine-rest/history/activity-instance?sortBy=startTime&sortOrder=desc&activityId=" + activityId + "&finished=false&unfinished=true&withoutTenantId=false";
@@ -225,7 +222,7 @@ public class CreditAnalystValidateService {
         }
     }
 
-    @BPMNSetterVariables(variables = "isValid")
+    @BPMNSetterVariables(variables = "allFine")
     public String approveTask(String processId) {
 
         TaskInfo taskInfo = getTaskInfoByProcessId(processId);
@@ -237,24 +234,23 @@ public class CreditAnalystValidateService {
 
             Map<String, Object> requestBody = new HashMap<>();
             Map<String, Object> variables = new HashMap<>();
-            Map<String, Object> isValid = new HashMap<>();
-            isValid.put("value", true);
-            isValid.put("type", "Boolean");
-            variables.put("isValid", isValid);
+            Map<String, Object> allFine = new HashMap<>();
+            allFine.put("value", true);
+            allFine.put("type", "Boolean");
+            variables.put("allFine", allFine);
             requestBody.put("variables", variables);
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
 
             try (Connection connection = DriverManager.getConnection("jdbc:postgresql://rds-msgf.cyrlczakjihy.us-east-1.rds.amazonaws.com:5432/credit_request", "postgres", "msgfoundation")) {
                 String camundaUrl = "http://localhost:9000/engine-rest/task/" + taskId + "/complete";
                 restTemplate.postForEntity(camundaUrl, requestEntity, Map.class);
-
                 String newTaskId = getTaskIdByProcessIdWithApi(processId);
 
                 if (newTaskId != null) {
                     updateTaskByProcessId(processId, newTaskId);
-                    setAssignee(newTaskId, "CreditCommittee");
+                    setAssignee(newTaskId, "CreditAnalyst");
                 }
-                return null;
+                return "";
             } catch (SQLException | HttpClientErrorException e) {
                 System.err.println("Error during task completion: " + e.getMessage());
                 return null;
@@ -265,7 +261,7 @@ public class CreditAnalystValidateService {
         }
     }
 
-    @BPMNSetterVariables(variables = "isValid")
+    @BPMNSetterVariables(variables = "allFine")
     public String rejectTask(String processId) {
         TaskInfo taskInfo = getTaskInfoByProcessId(processId);
 
@@ -276,25 +272,34 @@ public class CreditAnalystValidateService {
 
             Map<String, Object> requestBody = new HashMap<>();
             Map<String, Object> variables = new HashMap<>();
-            Map<String, Object> isValid = new HashMap<>();
-            isValid.put("value", false);
-            isValid.put("type", "Boolean");
-            variables.put("isValid", isValid);
+            Map<String, Object> allFine = new HashMap<>();
+            allFine.put("value", false);
+            allFine.put("type", "Boolean");
+            variables.put("allFine", allFine);
             requestBody.put("variables", variables);
-
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
 
-            String camundaUrl = "http://localhost:9000/engine-rest/task/" + taskId + "/complete";
-            restTemplate.postForEntity(camundaUrl, requestEntity, Map.class);
-
-            String newTaskId = getTaskIdByProcessIdWithApi(processId);
+            try (Connection connection = DriverManager.getConnection("jdbc:postgresql://rds-msgf.cyrlczakjihy.us-east-1.rds.amazonaws.com:5432/credit_request", "postgres", "msgfoundation")) {
+                String camundaUrl = "http://localhost:9000/engine-rest/task/" + taskId + "/complete";
+                restTemplate.postForEntity(camundaUrl, requestEntity, Map.class);
+                String newTaskId = getTaskIdByProcessIdWithApi(processId);
 
                 if (newTaskId != null) {
-                    updateTaskByProcessId(processId, newTaskId);
-
+                    // Update the "status" to "Draft" in the "CreditRequest" table
+                    String updateStatusQuery = "UPDATE credit_request SET status = 'DRAFT', count_reviewcr = count_reviewcr + 1 WHERE process_id = ?";
+                    try (PreparedStatement statement = connection.prepareStatement(updateStatusQuery)) {
+                        statement.setString(1, processId);
+                        updateTaskByProcessId(processId, newTaskId);
+                        setAssignee(newTaskId, "MarriedCouple");
+                    } catch (SQLException e) {
+                        return null;
+                    }
+                }
+                return "";
+            } catch (SQLException | HttpClientErrorException e) {
+                System.err.println("Error during task completion: " + e.getMessage());
+                return null;
             }
-            return null;
-
         } else {
             System.err.println("No task information found for Process ID " + processId);
             return null;
