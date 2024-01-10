@@ -222,9 +222,8 @@ public class LegalOfficeSupportsServices {
         }
     }
 
-    @BPMNSetterVariables(variables = "allFine")
+    @BPMNSetterVariables(variables = "validSupports")
     public String approveTask(String processId) {
-
         TaskInfo taskInfo = getTaskInfoByProcessId(processId);
 
         if (taskInfo != null) {
@@ -234,25 +233,27 @@ public class LegalOfficeSupportsServices {
 
             Map<String, Object> requestBody = new HashMap<>();
             Map<String, Object> variables = new HashMap<>();
-            Map<String, Object> allFine = new HashMap<>();
-            allFine.put("value", true);
-            allFine.put("type", "Boolean");
-            variables.put("allFine", allFine);
+            Map<String, Object> validSupports = new HashMap<>();
+            validSupports.put("value", true);
+            validSupports.put("type", "Boolean");
+            variables.put("validSupports", validSupports);
             requestBody.put("variables", variables);
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
 
-            try (Connection connection = DriverManager.getConnection("jdbc:postgresql://rds-msgf.cyrlczakjihy.us-east-1.rds.amazonaws.com:5432/credit_request", "postgres", "msgfoundation")) {
+            try {
                 String camundaUrl = "http://localhost:9000/engine-rest/task/" + taskId + "/complete";
                 restTemplate.postForEntity(camundaUrl, requestEntity, Map.class);
                 String newTaskId = getTaskIdByProcessIdWithApi(processId);
 
                 if (newTaskId != null) {
                     updateTaskByProcessId(processId, newTaskId);
-                    setAssignee(newTaskId, "CreditAnalyst");
+                    setAssignee(newTaskId, "LegalOfficeViability");
+
                 }
                 return "";
-            } catch (SQLException | HttpClientErrorException e) {
-                System.err.println("Error during task completion: " + e.getMessage());
+            } catch (HttpClientErrorException e) {
+                String errorMessage = e.getResponseBodyAsString();
+                System.err.println("Error during task completion: " + errorMessage);
                 return null;
             }
         } else {
@@ -261,7 +262,7 @@ public class LegalOfficeSupportsServices {
         }
     }
 
-    @BPMNSetterVariables(variables = "allFine")
+    @BPMNSetterVariables(variables = "validSupports")
     public String rejectTask(String processId) {
         TaskInfo taskInfo = getTaskInfoByProcessId(processId);
 
@@ -272,32 +273,27 @@ public class LegalOfficeSupportsServices {
 
             Map<String, Object> requestBody = new HashMap<>();
             Map<String, Object> variables = new HashMap<>();
-            Map<String, Object> allFine = new HashMap<>();
-            allFine.put("value", false);
-            allFine.put("type", "Boolean");
-            variables.put("allFine", allFine);
+            Map<String, Object> validSupports = new HashMap<>();
+            validSupports.put("value", false);
+            validSupports.put("type", "Boolean");
+            variables.put("validSupports", validSupports);
             requestBody.put("variables", variables);
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
 
-            try (Connection connection = DriverManager.getConnection("jdbc:postgresql://rds-msgf.cyrlczakjihy.us-east-1.rds.amazonaws.com:5432/credit_request", "postgres", "msgfoundation")) {
+            try {
                 String camundaUrl = "http://localhost:9000/engine-rest/task/" + taskId + "/complete";
                 restTemplate.postForEntity(camundaUrl, requestEntity, Map.class);
                 String newTaskId = getTaskIdByProcessIdWithApi(processId);
 
                 if (newTaskId != null) {
-                    // Update the "status" to "Draft" in the "CreditRequest" table
-                    String updateStatusQuery = "UPDATE credit_request SET status = 'DRAFT', count_reviewcr = count_reviewcr + 1 WHERE process_id = ?";
-                    try (PreparedStatement statement = connection.prepareStatement(updateStatusQuery)) {
-                        statement.setString(1, processId);
-                        updateTaskByProcessId(processId, newTaskId);
-                        setAssignee(newTaskId, "MarriedCouple");
-                    } catch (SQLException e) {
-                        return null;
-                    }
+                    updateTaskByProcessId(processId, newTaskId);
+                    setAssignee(newTaskId, "LegalOfficeSupports");
+
                 }
                 return "";
-            } catch (SQLException | HttpClientErrorException e) {
-                System.err.println("Error during task completion: " + e.getMessage());
+            } catch (HttpClientErrorException e) {
+                String errorMessage = e.getResponseBodyAsString();
+                System.err.println("Error during task completion: " + errorMessage);
                 return null;
             }
         } else {

@@ -24,7 +24,7 @@ public class LegalOfficeViabilityController {
     @GetMapping("/legal-office-viability")
     public String CreditAnalystValidateView(Model model) throws IOException {
 
-        List<String> processIds = this.legalOfficeViabilityServices.getAllProcessByActivityId("Activity_0w7pg72");
+        List<String> processIds = this.legalOfficeViabilityServices.getAllProcessByActivityId("Activity_012ypn5");
         System.out.println(processIds.toString());
         processVariablesListCA.clear();
         // Iterar a través de los processIds y obtener las variables para cada uno
@@ -50,7 +50,7 @@ public class LegalOfficeViabilityController {
         model.addAttribute("creditRequestDTO", creditRequestDTO);
         model.addAttribute("titulo", "Couple Application Validation ");
 
-        return  "modals/Validate";
+        return  "modals/LegalOfficeViability";
     }
 
     @PostMapping("/approve-legal-office-viability")

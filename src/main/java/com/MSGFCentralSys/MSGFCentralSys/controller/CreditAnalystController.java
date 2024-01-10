@@ -35,7 +35,7 @@ public class CreditAnalystController {
 
         // Agregar la lista de variables de proceso al modelo para pasarla a la vista
         model.addAttribute("processVariablesList", processVariablesListCA);
-        model.addAttribute("titulo", "Analyze Couple Applications Information ");
+        model.addAttribute("titulo", "Analyze Applications Information ");
         return "views/CreditAnalyst";
     }
 
@@ -45,8 +45,8 @@ public class CreditAnalystController {
         TaskInfo taskInfo = this.creditAnalystServices.getTaskInfoByProcessId(processId);
         creditRequestDTO.setTaskInfo(taskInfo);
         model.addAttribute("creditRequestDTO", creditRequestDTO);
-        model.addAttribute("titulo", "Couple Application Information");
-        return  "modals/Couple";
+        model.addAttribute("titulo", "Analyst Application Information");
+        return  "modals/Analyst";
     }
 
     @PostMapping("/approve-credit-analyst")

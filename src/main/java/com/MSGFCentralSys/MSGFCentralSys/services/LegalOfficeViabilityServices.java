@@ -221,9 +221,8 @@ public class LegalOfficeViabilityServices {
         }
     }
 
-    @BPMNSetterVariables(variables = "isValid")
+    @BPMNSetterVariables(variables = "legalConcept")
     public String approveTask(String processId) {
-
         TaskInfo taskInfo = getTaskInfoByProcessId(processId);
 
         if (taskInfo != null) {
@@ -233,26 +232,27 @@ public class LegalOfficeViabilityServices {
 
             Map<String, Object> requestBody = new HashMap<>();
             Map<String, Object> variables = new HashMap<>();
-            Map<String, Object> isValid = new HashMap<>();
-            isValid.put("value", true);
-            isValid.put("type", "Boolean");
-            variables.put("isValid", isValid);
+            Map<String, Object> legalConcept = new HashMap<>();
+            legalConcept.put("value", true);
+            legalConcept.put("type", "Boolean");
+            variables.put("legalConcept", legalConcept);
             requestBody.put("variables", variables);
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
 
-            try (Connection connection = DriverManager.getConnection("jdbc:postgresql://rds-msgf.cyrlczakjihy.us-east-1.rds.amazonaws.com:5432/credit_request", "postgres", "msgfoundation")) {
+            try {
                 String camundaUrl = "http://localhost:9000/engine-rest/task/" + taskId + "/complete";
                 restTemplate.postForEntity(camundaUrl, requestEntity, Map.class);
-
                 String newTaskId = getTaskIdByProcessIdWithApi(processId);
 
                 if (newTaskId != null) {
                     updateTaskByProcessId(processId, newTaskId);
-                    setAssignee(newTaskId, "CreditCommittee");
+                    setAssignee(newTaskId, "Treasury");
+
                 }
-                return null;
-            } catch (SQLException | HttpClientErrorException e) {
-                System.err.println("Error during task completion: " + e.getMessage());
+                return "";
+            } catch (HttpClientErrorException e) {
+                String errorMessage = e.getResponseBodyAsString();
+                System.err.println("Error during task completion: " + errorMessage);
                 return null;
             }
         } else {
@@ -261,7 +261,7 @@ public class LegalOfficeViabilityServices {
         }
     }
 
-    @BPMNSetterVariables(variables = "isValid")
+    @BPMNSetterVariables(variables = "legalConcept")
     public String rejectTask(String processId) {
         TaskInfo taskInfo = getTaskInfoByProcessId(processId);
 
@@ -272,25 +272,29 @@ public class LegalOfficeViabilityServices {
 
             Map<String, Object> requestBody = new HashMap<>();
             Map<String, Object> variables = new HashMap<>();
-            Map<String, Object> isValid = new HashMap<>();
-            isValid.put("value", false);
-            isValid.put("type", "Boolean");
-            variables.put("isValid", isValid);
+            Map<String, Object> legalConcept = new HashMap<>();
+            legalConcept.put("value", false);
+            legalConcept.put("type", "Boolean");
+            variables.put("legalConcept", legalConcept);
             requestBody.put("variables", variables);
-
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
 
-            String camundaUrl = "http://localhost:9000/engine-rest/task/" + taskId + "/complete";
-            restTemplate.postForEntity(camundaUrl, requestEntity, Map.class);
+            try {
+                String camundaUrl = "http://localhost:9000/engine-rest/task/" + taskId + "/complete";
+                restTemplate.postForEntity(camundaUrl, requestEntity, Map.class);
+                String newTaskId = getTaskIdByProcessIdWithApi(processId);
 
-            String newTaskId = getTaskIdByProcessIdWithApi(processId);
+                if (newTaskId != null) {
+                    updateTaskByProcessId(processId, newTaskId);
+                    setAssignee(newTaskId, "LegalOfficeViability");
 
-            if (newTaskId != null) {
-                updateTaskByProcessId(processId, newTaskId);
-
+                }
+                return "";
+            } catch (HttpClientErrorException e) {
+                String errorMessage = e.getResponseBodyAsString();
+                System.err.println("Error during task completion: " + errorMessage);
+                return null;
             }
-            return null;
-
         } else {
             System.err.println("No task information found for Process ID " + processId);
             return null;

@@ -5,7 +5,7 @@
       layout:decorate="~{layout/layout}">
 <head th:replace="layout/layout :: head">
     <meta charset="UTF-8">
-    <title>Credit Analyst</title>
+    <title>Legal Office Supports</title>
 </head>
 <body>
 
@@ -134,12 +134,11 @@
                         </div>
 
                         <div class="d-flex justify-content-evenly">
-                            <button class="btn btn-danger" data-target="#applicationRejectedValidate"
-                                    data-toggle="modal"
-                                    type="button">
+                            <button class="btn btn-danger" id="rejectButton" type="submit">
                                 <i class="fa-solid fa-circle-xmark mx-1"></i>
                                 <span>Rejected</span>
                             </button>
+
                             <button class="btn btn-success" id="approveButton" type="submit">
                                 <i class="fa-solid fa-circle-check mx-1"></i>
                                 <span>Approve</span>
@@ -147,50 +146,13 @@
                         </div>
                     </form>
                 </div>
-
-
-                <div aria-hidden="true" aria-labelledby="exampleModalLabel" class="modal fade"
-                     id="applicationRejectedValidate"
-                     tabindex="-1">
-                    <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-                        <div class="modal-content">
-                            <div class="modal-header text-center">
-                                <h5 class="modal-title">Reason for Rejection</h5>
-                                <button aria-label="Close" class="btn-close" data-dismiss="modal"
-                                        type="button"></button>
-                            </div>
-                            <form method="post">
-                                <div class="modal-body">
-                                    <div class="form-floating mb-3 p-1">
-                                <textarea class="form-select" id="rejected"
-                                          placeholder="Leave a comment here"
-                                          style="height: 200px ; background-image: none; resize: none"></textarea>
-                                        <label for="rejected">Reason</label>
-                                    </div>
-                                    <input id="processId" name="processId" th:value="${creditRequestDTO.getProcessId()}"
-                                           type="hidden">
-                                </div>
-                                <div class="modal-footer d-flex justify-content-around">
-                                    <button class="btn btn-danger" data-dismiss="modal" type="submit">
-                                        <i class="fa-solid fa-circle-xmark mx-1"></i>
-                                        <span>Cancel</span>
-                                    </button>
-                                    <button class="btn btn-success" id="rejectButton" type="submit">
-                                        <i class="fa-solid fa-circle-check mx-1"></i>
-                                        <span>Confirm</span>
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 </section>
 
 <th:block layout:fragment="page-scripts">
-    <script th:src="@{js/modals/ModalValidate.js}"></script>
+    <script th:src="@{js/modals/ModalLegalSupports.js}"></script>
 </th:block>
 </body>
 </html>

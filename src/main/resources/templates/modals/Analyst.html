@@ -50,33 +50,6 @@
                                            type="text">
                                     <label for="requestDate">Start Date:</label>
                                 </div>
-                                <div class="form-floating mb-3">
-                                    <input class="form-control"
-                                           id="housePrices"
-                                           name="housePrices"
-                                           th:value="${creditRequestDTO.getHousePrices()}"
-                                           readonly
-                                           type="number">
-                                    <label for="housePrices">House Prices:</label>
-                                </div>
-                                <div class="form-floating mb-3">
-                                    <input class="form-control"
-                                           id="quotaValue"
-                                           name="quotaValue"
-                                           th:value="${creditRequestDTO.getQuotaValue()}"
-                                           readonly
-                                           type="number">
-                                    <label for="quotaValue">Quota Value:</label>
-                                </div>
-                                <div class="form-floating mb-3">
-                                    <input class="form-control"
-                                           id="coupleSavings"
-                                           name="coupleSavings"
-                                           th:value="${creditRequestDTO.getCoupleSavings()}"
-                                           readonly
-                                           type="number">
-                                    <label for="coupleSavings">Couple Savings:</label>
-                                </div>
                             </div>
                             <div class="col-md-6">
                                 <div class="form-floating mb-3">
@@ -134,6 +107,11 @@
                         </div>
 
                         <div class="d-flex justify-content-evenly">
+                            <button class="btn btn-danger" id="rejectButton" type="submit">
+                                <i class="fa-solid fa-circle-xmark mx-1"></i>
+                                <span>Rejected</span>
+                            </button>
+
                             <button class="btn btn-success" id="approveButton" type="submit">
                                 <i class="fa-solid fa-circle-check mx-1"></i>
                                 <span>Approve</span>
@@ -147,7 +125,7 @@
 </section>
 
 <th:block layout:fragment="page-scripts">
-    <script th:src="@{js/modals/ModalCommittee.js}"></script>
+    <script th:src="@{js/modals/ModalAnalyst.js}"></script>
 </th:block>
 </body>
 </html>

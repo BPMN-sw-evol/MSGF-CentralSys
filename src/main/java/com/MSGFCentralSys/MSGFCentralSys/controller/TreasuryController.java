@@ -2,7 +2,6 @@ package com.MSGFCentralSys.MSGFCentralSys.controller;
 
 import com.MSGFCentralSys.MSGFCentralSys.dto.CreditRequestDTO;
 import com.MSGFCentralSys.MSGFCentralSys.dto.TaskInfo;
-import com.MSGFCentralSys.MSGFCentralSys.services.CreditCommitteServices;
 import com.MSGFCentralSys.MSGFCentralSys.services.TreasuryServices;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
@@ -24,7 +23,7 @@ public class TreasuryController {
 
     @GetMapping({"/treasury"})
     public String CreditCommitteView(Model model) throws IOException {
-        List<String> processIds = this.treasuryServices.getAllProcessByActivityId("Activity_14mlhta");
+        List<String> processIds = this.treasuryServices.getAllProcessByActivityId("Activity_0hyf97s");
         processVariablesListCC.clear();
 
         // Crear una lista para almacenar información de variables de proceso
@@ -53,7 +52,7 @@ public class TreasuryController {
         model.addAttribute("creditRequestDTO", creditRequestDTO);
         model.addAttribute("titulo", "Application Review");
 
-        return  "modals/Committee";
+        return  "modals/Treasury";
     }
 
     @PostMapping("/approve-treasury")

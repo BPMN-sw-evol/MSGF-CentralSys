@@ -25,7 +25,7 @@ public class LegalOfficeSupportsController {
     @GetMapping("/legal-office-supports")
     public String LegalOfficeSupportsView(Model model){
 
-        List<String> processIds = this.legalOfficeSupportsServices.getAllProcessByActivityId("Activity_0h13zv2");
+        List<String> processIds = this.legalOfficeSupportsServices.getAllProcessByActivityId("Activity_15y8fg5");
         processVariablesListCA.clear();
         // Iterar a través de los processIds y obtener las variables para cada uno
         for (String processId : processIds) {
@@ -48,7 +48,7 @@ public class LegalOfficeSupportsController {
         creditRequestDTO.setTaskInfo(taskInfo);
         model.addAttribute("creditRequestDTO", creditRequestDTO);
         model.addAttribute("titulo", "Couple Application Information");
-        return  "modals/Couple";
+        return  "modals/LegalOfficeSupports";
     }
 
     @PostMapping("/approve-legal-office-supports")

@@ -17,12 +17,12 @@ import java.util.*;
 
 @Service
 @BPMNTask(type = "UserTask",name = "Evaluar crédito")
-public class CreditCommitteServices {
+public class CreditCommitteeServices {
     private final RestTemplate restTemplate;
     private List<TaskInfo> tasksList = new ArrayList<>();
 
     @Autowired
-    public CreditCommitteServices(RestTemplate restTemplate) {
+    public CreditCommitteeServices(RestTemplate restTemplate) {
         this.restTemplate = restTemplate;
     }
 
@@ -162,6 +162,26 @@ public class CreditCommitteServices {
         }
     }
 
+    public void setAssignee(String taskId, String userId) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("userId", userId);
+
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
+
+        String camundaUrl = "http://localhost:9000/engine-rest/task/" + taskId + "/assignee";
+
+        try {
+            ResponseEntity<String> response = restTemplate.exchange(camundaUrl, HttpMethod.POST, requestEntity, String.class);
+            System.out.println("Assignee set successfully");
+        } catch (HttpClientErrorException e) {
+            String errorMessage = e.getResponseBodyAsString();
+            System.err.println("Error in the Camunda request: " + errorMessage);
+        }
+    }
+
     public String getTaskIdByProcessIdWithApi(String processId) {
         String camundaUrl = "http://localhost:9000/engine-rest/task?processInstanceId=" + processId;
 
@@ -200,7 +220,7 @@ public class CreditCommitteServices {
         }
     }
 
-    @BPMNSetterVariables(variables = "financialViability")
+    @BPMNSetterVariables(variables = "isValid")
     public String approveTask(String processId) {
         TaskInfo taskInfo = getTaskInfoByProcessId(processId);
 
@@ -210,7 +230,13 @@ public class CreditCommitteServices {
             headers.setContentType(MediaType.APPLICATION_JSON);
 
             Map<String, Object> requestBody = new HashMap<>();
-            HttpEntity<Map> requestEntity = new HttpEntity<>(requestBody, headers);
+            Map<String, Object> variables = new HashMap<>();
+            Map<String, Object> isValid = new HashMap<>();
+            isValid.put("value", true);
+            isValid.put("type", "Boolean");
+            variables.put("isValid", isValid);
+            requestBody.put("variables", variables);
+            HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
 
             try {
                 String camundaUrl = "http://localhost:9000/engine-rest/task/" + taskId + "/complete";
@@ -219,6 +245,48 @@ public class CreditCommitteServices {
 
                 if (newTaskId != null) {
                     updateTaskByProcessId(processId, newTaskId);
+                    setAssignee(newTaskId, "LegalOffice");
+
+                }
+                return "";
+            } catch (HttpClientErrorException e) {
+                String errorMessage = e.getResponseBodyAsString();
+                System.err.println("Error during task completion: " + errorMessage);
+                return null;
+            }
+        } else {
+            System.err.println("No task information found for Process ID " + processId);
+            return null;
+        }
+    }
+
+    @BPMNSetterVariables(variables = "isValid")
+    public String rejectTask(String processId) {
+        TaskInfo taskInfo = getTaskInfoByProcessId(processId);
+
+        if (taskInfo != null) {
+            String taskId = taskInfo.getTaskId();
+            HttpHeaders headers = new HttpHeaders();
+            headers.setContentType(MediaType.APPLICATION_JSON);
+
+            Map<String, Object> requestBody = new HashMap<>();
+            Map<String, Object> variables = new HashMap<>();
+            Map<String, Object> isValid = new HashMap<>();
+            isValid.put("value", false);
+            isValid.put("type", "Boolean");
+            variables.put("isValid", isValid);
+            requestBody.put("variables", variables);
+            HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
+
+            try {
+                String camundaUrl = "http://localhost:9000/engine-rest/task/" + taskId + "/complete";
+                restTemplate.postForEntity(camundaUrl, requestEntity, Map.class);
+                String newTaskId = getTaskIdByProcessIdWithApi(processId);
+
+                if (newTaskId != null) {
+                    updateTaskByProcessId(processId, newTaskId);
+                    setAssignee(newTaskId, "CreditCommittee");
+
                 }
                 return "";
             } catch (HttpClientErrorException e) {

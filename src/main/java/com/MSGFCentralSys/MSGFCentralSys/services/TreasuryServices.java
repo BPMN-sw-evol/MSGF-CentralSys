@@ -198,7 +198,6 @@ public class TreasuryServices {
         }
     }
 
-    @BPMNSetterVariables(variables = "financialViability")
     public String approveTask(String processId) {
         TaskInfo taskInfo = getTaskInfoByProcessId(processId);
 
