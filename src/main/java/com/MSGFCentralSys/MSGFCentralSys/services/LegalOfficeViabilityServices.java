@@ -17,6 +17,7 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -247,6 +248,7 @@ public class LegalOfficeViabilityServices {
                 if (newTaskId != null) {
                     updateTaskByProcessId(processId, newTaskId);
                     setAssignee(newTaskId, "Treasury");
+                    updateReviewAndStatus(processId,"Aprobar proceso de pago");
 
                 }
                 return "";
@@ -254,6 +256,8 @@ public class LegalOfficeViabilityServices {
                 String errorMessage = e.getResponseBodyAsString();
                 System.err.println("Error during task completion: " + errorMessage);
                 return null;
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
         } else {
             System.err.println("No task information found for Process ID " + processId);
@@ -287,6 +291,7 @@ public class LegalOfficeViabilityServices {
                 if (newTaskId != null) {
                     updateTaskByProcessId(processId, newTaskId);
                     setAssignee(newTaskId, "LegalOfficeViability");
+                    updateReviewAndStatus(processId, "Rechazo de solicitud por viabilidad financiera");
 
                 }
                 return "";
@@ -294,10 +299,31 @@ public class LegalOfficeViabilityServices {
                 String errorMessage = e.getResponseBodyAsString();
                 System.err.println("Error during task completion: " + errorMessage);
                 return null;
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
         } else {
             System.err.println("No task information found for Process ID " + processId);
             return null;
+        }
+    }
+
+    public void updateReviewAndStatus(String processId, String status) throws SQLException {
+        Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/credit_request", "postgres", "admin");
+
+        String updateQuery = "UPDATE credit_request SET status = ?, count_reviewcr = count_reviewcr + 1 WHERE process_id = ?";
+
+        try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
+            updateStatement.setString(1, status);
+            updateStatement.setString(2, processId);
+
+            int rowsAffected = updateStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Status updated, and count_reviewcr incremented.");
+            } else {
+                System.out.println("No records found for the given processId: " + processId);
+            }
         }
     }
 }

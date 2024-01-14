@@ -40,7 +40,7 @@ public class TreasuryController {
         // Agregar la lista de variables de proceso al modelo para pasarla a la vista
         model.addAttribute("processIds", processIds);
         model.addAttribute("processVariablesList", processVariablesListCC);
-        model.addAttribute("titulo","Assess Applications");
+        model.addAttribute("titulo","APPROVE PAYMENT PROCESS BY TREASURY AREA");
         return "views/Treasury";
     }
 
@@ -50,7 +50,7 @@ public class TreasuryController {
         TaskInfo taskInfo = this.treasuryServices.getTaskInfoByProcessId(processId);
         creditRequestDTO.setTaskInfo(taskInfo);
         model.addAttribute("creditRequestDTO", creditRequestDTO);
-        model.addAttribute("titulo", "Application Review");
+        model.addAttribute("titulo", "APPROVE PAYMENT PROCESS BY TREASURY AREA");
 
         return  "modals/Treasury";
     }

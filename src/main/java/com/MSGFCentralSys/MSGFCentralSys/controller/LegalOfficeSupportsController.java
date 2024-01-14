@@ -37,7 +37,7 @@ public class LegalOfficeSupportsController {
 
         // Agregar la lista de variables de proceso al modelo para pasarla a la vista
         model.addAttribute("processVariablesList", processVariablesListCA);
-        model.addAttribute("titulo", "Analyze Couple Applications Information ");
+        model.addAttribute("titulo", "REVIEW REQUEST SUPPORTS BY LEGAL OFFICE");
         return "views/LegalOfficeSupports";
     }
 
@@ -47,7 +47,7 @@ public class LegalOfficeSupportsController {
         TaskInfo taskInfo = this.legalOfficeSupportsServices.getTaskInfoByProcessId(processId);
         creditRequestDTO.setTaskInfo(taskInfo);
         model.addAttribute("creditRequestDTO", creditRequestDTO);
-        model.addAttribute("titulo", "Couple Application Information");
+        model.addAttribute("titulo", "REVIEW REQUEST SUPPORTS BY LEGAL OFFICE");
         return  "modals/LegalOfficeSupports";
     }
 

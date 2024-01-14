@@ -38,7 +38,7 @@ public class CreditCommitteController {
         // Agregar la lista de variables de proceso al modelo para pasarla a la vista
         model.addAttribute("processIds", processIds);
         model.addAttribute("processVariablesList", processVariablesListCC);
-        model.addAttribute("titulo","Assess Applications");
+        model.addAttribute("titulo","EVALUATE CREDIT BY CREDIT COMMITTEE");
         return "views/CreditCommittee";
     }
 
@@ -48,7 +48,7 @@ public class CreditCommitteController {
         TaskInfo taskInfo = this.creditCommitteeServices.getTaskInfoByProcessId(processId);
         creditRequestDTO.setTaskInfo(taskInfo);
         model.addAttribute("creditRequestDTO", creditRequestDTO);
-        model.addAttribute("titulo", "Application Review");
+        model.addAttribute("titulo", "EVALUATE CREDIT BY CREDIT COMMITTEE");
 
             return  "modals/Committee";
     }

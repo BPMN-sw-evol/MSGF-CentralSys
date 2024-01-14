@@ -37,7 +37,7 @@ public class LegalOfficeViabilityController {
 
         // Agregar la lista de variables de proceso al modelo para pasarla a la vista
         model.addAttribute("processVariablesList", processVariablesListCA);
-        model.addAttribute("titulo", "Verify Validity of Applications");
+        model.addAttribute("titulo", "DETERMINE FINANCIAL VIABILITY BY LEGAL OFFICE");
         return "views/LegalOfficeViability";
 
     }
@@ -48,7 +48,7 @@ public class LegalOfficeViabilityController {
         TaskInfo taskInfo = this.legalOfficeViabilityServices.getTaskInfoByProcessId(processId);
         creditRequestDTO.setTaskInfo(taskInfo);
         model.addAttribute("creditRequestDTO", creditRequestDTO);
-        model.addAttribute("titulo", "Couple Application Validation ");
+        model.addAttribute("titulo", "DETERMINE FINANCIAL VIABILITY BY LEGAL OFFICE");
 
         return  "modals/LegalOfficeViability";
     }
