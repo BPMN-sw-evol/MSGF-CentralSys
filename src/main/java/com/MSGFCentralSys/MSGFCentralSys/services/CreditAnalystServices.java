@@ -21,8 +21,8 @@ import java.sql.SQLException;
 import java.util.*;
 
 @Service
-@BPMNTask(type = "UserTask",name = "Revisar detalles de solicitud")
 @RequiredArgsConstructor
+@BPMNTask(type = "UserTask",name = "Revisar detalles de solicitud")
 public class CreditAnalystServices {
     private final RestTemplate restTemplate;
     private List<TaskInfo> tasksList = new ArrayList<>();
@@ -53,7 +53,7 @@ public class CreditAnalystServices {
         return processIds;
     }
 
-    @BPMNGetterVariables(container = "CreditRequestDTO", variables = {"coupleName1", "coupleName2", "coupleEmail1", "coupleEmail2", "marriageYears", "bothEmployees", "housePrices", "quotaValue", "coupleSavings", "countReviewsBpm"})
+    @BPMNGetterVariables(container = "CreditRequestDTO", variables = {"coupleName1", "coupleName2", "coupleEmail1", "coupleEmail2", "marriageYears", "bothEmployees", "creationDate", "countReviewsBpm"})
     public CreditRequestDTO getProcessVariablesById(String processId) {
         String CAMUNDA_API_URL = "http://localhost:9000/engine-rest/";
         String camundaURL = CAMUNDA_API_URL + "process-instance/" + processId + "/variables?deserializeValues=true";
@@ -85,18 +85,6 @@ public class CreditAnalystServices {
             Map<String, Object> bothEmployeesMap = (Map<String, Object>) variablesMap.get("bothEmployees");
             Boolean bothEmployeesValue = (Boolean) bothEmployeesMap.get("value");
             creditRequest.setBothEmployees(bothEmployeesValue);
-
-            Map<String, Object> housePricesMap = (Map<String, Object>) variablesMap.getOrDefault("housePrices", Collections.singletonMap("value", 0));
-            Integer housePricesValue = (Integer) housePricesMap.get("value");
-            creditRequest.setHousePrices(housePricesValue != null ? housePricesValue.longValue() : 0);
-
-            Map<String, Object> quotaValueMap = (Map<String, Object>) variablesMap.getOrDefault("quotaValue", Collections.singletonMap("value", 0));
-            Integer quotaValueValue = (Integer) quotaValueMap.get("value");
-            creditRequest.setQuotaValue(quotaValueValue != null ? quotaValueValue.longValue() : 0);
-
-            Map<String, Object> coupleSavingsMap = (Map<String, Object>) variablesMap.getOrDefault("coupleSavings", Collections.singletonMap("value", 0));
-            Integer coupleSavingsValue = (Integer) coupleSavingsMap.get("value");
-            creditRequest.setCoupleSavings(coupleSavingsValue != null ? coupleSavingsValue.longValue() : 0);
 
             Map<String, Object> requestDateMap = (Map<String, Object>) variablesMap.get("creationDate");
             String requestDateValue = (String) requestDateMap.get("value");
@@ -328,6 +316,7 @@ public class CreditAnalystServices {
         }
     }
 
+    @BPMNSetterVariables(variables = "countReviewsBpm")
     public void updateReviewAndStatus(String processId, String status) throws SQLException {
         Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/credit_request", "postgres", "admin");
 

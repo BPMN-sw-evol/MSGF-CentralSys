@@ -54,7 +54,7 @@ public class LegalOfficeViabilityServices {
         return processIds;
     }
 
-    @BPMNGetterVariables(container = "CreditRequestDTO", variables = {"coupleName1", "coupleName2", "coupleEmail1", "coupleEmail2", "marriageYears", "bothEmployees", "housePrices", "quotaValue", "coupleSavings", "countReviewsBpm"})
+    @BPMNGetterVariables(container = "CreditRequestDTO", variables = {"coupleName1", "coupleName2", "coupleEmail1", "coupleEmail2", "marriageYears", "bothEmployees", "housePrices", "quotaValue", "coupleSavings", "creationDate", "countReviewsBpm"})
     public CreditRequestDTO getProcessVariablesById(String processId) {
         String CAMUNDA_API_URL = "http://localhost:9000/engine-rest/";
         String camundaURL = CAMUNDA_API_URL + "process-instance/" + processId + "/variables?deserializeValues=true";
@@ -308,6 +308,7 @@ public class LegalOfficeViabilityServices {
         }
     }
 
+    @BPMNSetterVariables(variables = "countReviewsBpm")
     public void updateReviewAndStatus(String processId, String status) throws SQLException {
         Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/credit_request", "postgres", "admin");
 
