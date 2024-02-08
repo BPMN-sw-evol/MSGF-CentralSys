@@ -1,13 +1,13 @@
 package com.MSGFCentralSys.MSGFCentralSys.services;
 
-
-
 import com.MSGFCentralSys.MSGFCentralSys.dto.CreditRequestDTO;
 import com.MSGFCentralSys.MSGFCentralSys.dto.TaskInfo;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.msgfoundation.annotations.*;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.msgfoundation.annotations.BPMNGetterVariables;
+import com.msgfoundation.annotations.BPMNSetterVariables;
+import com.msgfoundation.annotations.BPMNTask;
+import lombok.RequiredArgsConstructor;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.*;
 import org.springframework.stereotype.Service;
@@ -17,19 +17,16 @@ import org.springframework.web.client.RestTemplate;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.*;
 
 @Service
-@BPMNTask(type = "UserTask",name = "Verificar validez")
-public class CreditAnalystValidateService {
+@BPMNTask(type = "UserTask",name = "Determinar viabilidad financiera")
+@RequiredArgsConstructor
+public class LegalOfficeViabilityServices {
     private final RestTemplate restTemplate;
     private List<TaskInfo> tasksList = new ArrayList<>();
-
-    @Autowired
-    public CreditAnalystValidateService(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
-    }
 
     public List<String> getAllProcessByActivityId(String activityId) {
         String url = "http://localhost:9000/engine-rest/history/activity-instance?sortBy=startTime&sortOrder=desc&activityId=" + activityId + "&finished=false&unfinished=true&withoutTenantId=false";
@@ -57,7 +54,7 @@ public class CreditAnalystValidateService {
         return processIds;
     }
 
-    @BPMNGetterVariables(container = "CreditRequestDTO", variables = {"coupleName1", "coupleName2", "coupleEmail1", "coupleEmail2", "marriageYears", "bothEmployees", "housePrices", "quotaValue", "coupleSavings", "countReviewsBpm"})
+    @BPMNGetterVariables(container = "CreditRequestDTO", variables = {"coupleName1", "coupleName2", "coupleEmail1", "coupleEmail2", "marriageYears", "bothEmployees", "housePrices", "quotaValue", "coupleSavings", "creationDate", "countReviewsBpm"})
     public CreditRequestDTO getProcessVariablesById(String processId) {
         String CAMUNDA_API_URL = "http://localhost:9000/engine-rest/";
         String camundaURL = CAMUNDA_API_URL + "process-instance/" + processId + "/variables?deserializeValues=true";
@@ -225,9 +222,8 @@ public class CreditAnalystValidateService {
         }
     }
 
-    @BPMNSetterVariables(variables = "isValid")
+    @BPMNSetterVariables(variables = "legalConcept")
     public String approveTask(String processId) {
-
         TaskInfo taskInfo = getTaskInfoByProcessId(processId);
 
         if (taskInfo != null) {
@@ -237,27 +233,31 @@ public class CreditAnalystValidateService {
 
             Map<String, Object> requestBody = new HashMap<>();
             Map<String, Object> variables = new HashMap<>();
-            Map<String, Object> isValid = new HashMap<>();
-            isValid.put("value", true);
-            isValid.put("type", "Boolean");
-            variables.put("isValid", isValid);
+            Map<String, Object> legalConcept = new HashMap<>();
+            legalConcept.put("value", true);
+            legalConcept.put("type", "Boolean");
+            variables.put("legalConcept", legalConcept);
             requestBody.put("variables", variables);
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
 
-            try (Connection connection = DriverManager.getConnection("jdbc:postgresql://rds-msgf.cyrlczakjihy.us-east-1.rds.amazonaws.com:5432/credit_request", "postgres", "msgfoundation")) {
+            try {
                 String camundaUrl = "http://localhost:9000/engine-rest/task/" + taskId + "/complete";
                 restTemplate.postForEntity(camundaUrl, requestEntity, Map.class);
-
                 String newTaskId = getTaskIdByProcessIdWithApi(processId);
 
                 if (newTaskId != null) {
                     updateTaskByProcessId(processId, newTaskId);
-                    setAssignee(newTaskId, "CreditCommittee");
+                    setAssignee(newTaskId, "Treasury");
+                    updateReviewAndStatus(processId,"Aprobar proceso de pago");
+
                 }
+                return "";
+            } catch (HttpClientErrorException e) {
+                String errorMessage = e.getResponseBodyAsString();
+                System.err.println("Error during task completion: " + errorMessage);
                 return null;
-            } catch (SQLException | HttpClientErrorException e) {
-                System.err.println("Error during task completion: " + e.getMessage());
-                return null;
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
         } else {
             System.err.println("No task information found for Process ID " + processId);
@@ -265,7 +265,7 @@ public class CreditAnalystValidateService {
         }
     }
 
-    @BPMNSetterVariables(variables = "isValid")
+    @BPMNSetterVariables(variables = "legalConcept")
     public String rejectTask(String processId) {
         TaskInfo taskInfo = getTaskInfoByProcessId(processId);
 
@@ -276,28 +276,55 @@ public class CreditAnalystValidateService {
 
             Map<String, Object> requestBody = new HashMap<>();
             Map<String, Object> variables = new HashMap<>();
-            Map<String, Object> isValid = new HashMap<>();
-            isValid.put("value", false);
-            isValid.put("type", "Boolean");
-            variables.put("isValid", isValid);
+            Map<String, Object> legalConcept = new HashMap<>();
+            legalConcept.put("value", false);
+            legalConcept.put("type", "Boolean");
+            variables.put("legalConcept", legalConcept);
             requestBody.put("variables", variables);
-
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
 
-            String camundaUrl = "http://localhost:9000/engine-rest/task/" + taskId + "/complete";
-            restTemplate.postForEntity(camundaUrl, requestEntity, Map.class);
-
-            String newTaskId = getTaskIdByProcessIdWithApi(processId);
+            try {
+                String camundaUrl = "http://localhost:9000/engine-rest/task/" + taskId + "/complete";
+                restTemplate.postForEntity(camundaUrl, requestEntity, Map.class);
+                String newTaskId = getTaskIdByProcessIdWithApi(processId);
 
                 if (newTaskId != null) {
                     updateTaskByProcessId(processId, newTaskId);
+                    setAssignee(newTaskId, "LegalOfficeViability");
+                    updateReviewAndStatus(processId, "Rechazo de solicitud por viabilidad financiera");
 
+                }
+                return "";
+            } catch (HttpClientErrorException e) {
+                String errorMessage = e.getResponseBodyAsString();
+                System.err.println("Error during task completion: " + errorMessage);
+                return null;
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
             }
-            return null;
-
         } else {
             System.err.println("No task information found for Process ID " + processId);
             return null;
+        }
+    }
+
+    @BPMNSetterVariables(variables = "countReviewsBpm")
+    public void updateReviewAndStatus(String processId, String status) throws SQLException {
+        Connection connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/credit_request", "postgres", "admin");
+
+        String updateQuery = "UPDATE credit_request SET status = ?, count_reviewcr = count_reviewcr + 1 WHERE process_id = ?";
+
+        try (PreparedStatement updateStatement = connection.prepareStatement(updateQuery)) {
+            updateStatement.setString(1, status);
+            updateStatement.setString(2, processId);
+
+            int rowsAffected = updateStatement.executeUpdate();
+
+            if (rowsAffected > 0) {
+                System.out.println("Status updated, and count_reviewcr incremented.");
+            } else {
+                System.out.println("No records found for the given processId: " + processId);
+            }
         }
     }
 }

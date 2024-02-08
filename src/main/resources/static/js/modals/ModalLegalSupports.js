@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Agregar un controlador de clic al botón de aprobación
     approveButton.addEventListener("click", function (event) {
         event.preventDefault(); // Evitar que el formulario se envíe automáticamente
-        form.action="/approve-credit-committee"
+        form.action="/approve-legal-office-supports"
 
         // Mostrar la alerta con un indicador de carga al inicio del envío del formulario
         Swal.fire({
@@ -35,7 +35,7 @@ document.addEventListener("DOMContentLoaded", function () {
     // Agregar un controlador de clic al botón de aprobación
     rejectButton.addEventListener("click", function (event) {
         event.preventDefault(); // Evitar que el formulario se envíe automáticamente
-        form.action="/reject-credit-committee"
+        form.action="/reject-legal-office-supports"
 
         // Mostrar la alerta con un indicador de carga al inicio del envío del formulario
         Swal.fire({

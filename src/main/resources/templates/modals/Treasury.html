@@ -5,7 +5,7 @@
       layout:decorate="~{layout/layout}">
 <head th:replace="layout/layout :: head">
     <meta charset="UTF-8">
-    <title>Credit Committee</title>
+    <title>Treasury</title>
 </head>
 <body>
 
@@ -134,12 +134,7 @@
                         </div>
 
                         <div class="d-flex justify-content-evenly">
-                            <button class="btn btn-danger" id="rejectButton" type="submit">
-                                <i class="fa-solid fa-circle-xmark mx-1"></i>
-                                <span>Rejected</span>
-                            </button>
-
-                            <button class="btn btn-success" id="approveButton" type="submit">
+                                                       <button class="btn btn-success" id="approveButton" type="submit">
                                 <i class="fa-solid fa-circle-check mx-1"></i>
                                 <span>Approve</span>
                             </button>
@@ -152,7 +147,7 @@
 </section>
 
 <th:block layout:fragment="page-scripts">
-    <script th:src="@{js/modals/ModalCommittee.js}"></script>
+    <script th:src="@{js/modals/Treasury.js}"></script>
 </th:block>
 </body>
 </html>

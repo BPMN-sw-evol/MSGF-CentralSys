@@ -5,7 +5,7 @@
       layout:decorate="~{layout/layout}">
 <head th:replace="layout/layout :: head">
     <meta charset="UTF-8">
-    <title>Credit Committee</title>
+    <title>Credit Analyst</title>
 </head>
 <body>
 
@@ -49,33 +49,6 @@
                                            readonly
                                            type="text">
                                     <label for="requestDate">Start Date:</label>
-                                </div>
-                                <div class="form-floating mb-3">
-                                    <input class="form-control"
-                                           id="housePrices"
-                                           name="housePrices"
-                                           th:value="${creditRequestDTO.getHousePrices()}"
-                                           readonly
-                                           type="number">
-                                    <label for="housePrices">House Prices:</label>
-                                </div>
-                                <div class="form-floating mb-3">
-                                    <input class="form-control"
-                                           id="quotaValue"
-                                           name="quotaValue"
-                                           th:value="${creditRequestDTO.getQuotaValue()}"
-                                           readonly
-                                           type="number">
-                                    <label for="quotaValue">Quota Value:</label>
-                                </div>
-                                <div class="form-floating mb-3">
-                                    <input class="form-control"
-                                           id="coupleSavings"
-                                           name="coupleSavings"
-                                           th:value="${creditRequestDTO.getCoupleSavings()}"
-                                           readonly
-                                           type="number">
-                                    <label for="coupleSavings">Couple Savings:</label>
                                 </div>
                             </div>
                             <div class="col-md-6">
@@ -152,7 +125,7 @@
 </section>
 
 <th:block layout:fragment="page-scripts">
-    <script th:src="@{js/modals/ModalCommittee.js}"></script>
+    <script th:src="@{js/modals/ModalAnalyst.js}"></script>
 </th:block>
 </body>
 </html>

@@ -7,7 +7,7 @@ function fillFormFields(button) {
 
     var form = document.createElement('form');
     form.method = 'post';
-    form.action = '/view-credit-analyst-validate'; // Endpoint donde se enviará el formulario
+    form.action = '/view-legal-office-viability'; // Endpoint donde se enviará el formulario
 
     // Crear un input oculto para enviar el processId
     var input = document.createElement('input');

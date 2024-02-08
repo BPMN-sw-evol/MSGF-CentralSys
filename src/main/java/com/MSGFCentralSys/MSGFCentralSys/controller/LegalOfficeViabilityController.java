@@ -2,7 +2,8 @@ package com.MSGFCentralSys.MSGFCentralSys.controller;
 
 import com.MSGFCentralSys.MSGFCentralSys.dto.CreditRequestDTO;
 import com.MSGFCentralSys.MSGFCentralSys.dto.TaskInfo;
-import com.MSGFCentralSys.MSGFCentralSys.services.CreditAnalystValidateService;
+import com.MSGFCentralSys.MSGFCentralSys.services.LegalOfficeViabilityServices;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,56 +15,53 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Controller
-public class CreditAnalystValidateController {
-
-    private final CreditAnalystValidateService creditAnalystValidateService;
+@RequiredArgsConstructor
+public class LegalOfficeViabilityController {
+    private final LegalOfficeViabilityServices legalOfficeViabilityServices;
     List<CreditRequestDTO> processVariablesListCA = new ArrayList<>();
 
-    public CreditAnalystValidateController(CreditAnalystValidateService creditAnalystValidateService) {
-        this.creditAnalystValidateService = creditAnalystValidateService;
-    }
 
-    @GetMapping("/credit-analyst-validate")
+    @GetMapping("/legal-office-viability")
     public String CreditAnalystValidateView(Model model) throws IOException {
 
-        List<String> processIds = this.creditAnalystValidateService.getAllProcessByActivityId("Activity_0w7pg72");
+        List<String> processIds = this.legalOfficeViabilityServices.getAllProcessByActivityId("Activity_012ypn5");
         System.out.println(processIds.toString());
         processVariablesListCA.clear();
         // Iterar a través de los processIds y obtener las variables para cada uno
         for (String processId : processIds) {
-            CreditRequestDTO creditRequestDTO = this.creditAnalystValidateService.getProcessVariablesById(processId);
-            TaskInfo taskInfo = this.creditAnalystValidateService.getTaskInfoByProcessId(processId);
+            CreditRequestDTO creditRequestDTO = this.legalOfficeViabilityServices.getProcessVariablesById(processId);
+            TaskInfo taskInfo = this.legalOfficeViabilityServices.getTaskInfoByProcessId(processId);
             creditRequestDTO.setTaskInfo(taskInfo);
             processVariablesListCA.add(creditRequestDTO);
         }
 
         // Agregar la lista de variables de proceso al modelo para pasarla a la vista
         model.addAttribute("processVariablesList", processVariablesListCA);
-        model.addAttribute("titulo", "Verify Validity of Applications");
-        return "views/CreditAnalystValidate";
+        model.addAttribute("titulo", "DETERMINE FINANCIAL VIABILITY BY LEGAL OFFICE");
+        return "views/LegalOfficeViability";
 
     }
 
-    @PostMapping("/view-credit-analyst-validate")
+    @PostMapping("/view-legal-office-viability")
     public  String viewTaskValidate(@RequestParam(name = "processId") String processId, Model model){
-        CreditRequestDTO creditRequestDTO = this.creditAnalystValidateService.getProcessVariablesById(processId);
-        TaskInfo taskInfo = this.creditAnalystValidateService.getTaskInfoByProcessId(processId);
+        CreditRequestDTO creditRequestDTO = this.legalOfficeViabilityServices.getProcessVariablesById(processId);
+        TaskInfo taskInfo = this.legalOfficeViabilityServices.getTaskInfoByProcessId(processId);
         creditRequestDTO.setTaskInfo(taskInfo);
         model.addAttribute("creditRequestDTO", creditRequestDTO);
-        model.addAttribute("titulo", "Couple Application Validation ");
+        model.addAttribute("titulo", "DETERMINE FINANCIAL VIABILITY BY LEGAL OFFICE");
 
-        return  "modals/Validate";
+        return  "modals/LegalOfficeViability";
     }
 
-    @PostMapping("/approve-credit-analyst-validate")
+    @PostMapping("/approve-legal-office-viability")
     public String approveTaskValidate(@RequestParam(name = "processId") String processId){
-        this.creditAnalystValidateService.approveTask(processId);
-        return "redirect:/credit-analyst-validate";
+        this.legalOfficeViabilityServices.approveTask(processId);
+        return "redirect:/legal-office-viability";
     }
 
-    @PostMapping("/reject-credit-analyst-validate")
+    @PostMapping("/reject-legal-office-viability")
     public String rejectTaskValidate(@RequestParam(name = "processId") String processId){
-        this.creditAnalystValidateService.rejectTask(processId);
-        return "redirect:/credit-analyst-validate";
+        this.legalOfficeViabilityServices.rejectTask(processId);
+        return "redirect:/legal-office-viability";
     }
 }
