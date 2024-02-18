@@ -21,7 +21,6 @@ To use this program you need the following:
 
 1. **Version control system**: Install GIT from the [GIT official website](https://git-scm.com/downloads).
 
-
 2. **IntelliJ IDEA**: To run and/or modify the project, you can download it from the [IntelliJ official website](https://www.jetbrains.com/es-es/idea/download/?section=windows).
 
 3. **Java 17 or higher**: You can get help to download and install the java version by following [this link](https://www.youtube.com/watch?v=oAin-q1oTDw&pp=ygUXY29tbyBjb25maWd1cmFyIGphdmEgMTc%3D)
@@ -32,7 +31,7 @@ To use this program you need the following:
 
 ## Usage
 
-To use the program you must do:
+To use this program in your local machine you must:
 
 1. Open a terminal in the folder where you want to download the program and clone it with:
 
@@ -40,9 +39,16 @@ To use the program you must do:
    git clone https://github.com/BPMN-sw-evol/MSGF-CentralSys.git
    ```
 
-2. Open the **MSGF-CentralSys** folder and find the **Application** file containing the main method and run it with the start option (upper green triangle).
+2. Create a .env file with the database connection info (Remember that you must have the "credit_request" database created on your PostgreSQL server):
+   ```
+   DB_URL=jdbc:postgresql://localhost:5432/credit_request
+   DB_USERNAME=postgres
+   DB_PASSWORD=admin
 
-3. The program works on port 8080. To access open the browser of your choice and type in the search box:
+   ```
+3. Open the **MSGF-CentralSys** folder and find the **Application** file containing the main method and run it with the start option (upper green triangle).
+
+3. The program works on port 9003. To access open the browser of your choice and type in the search box:
    ```
    http://localhost:9003/
    ```
