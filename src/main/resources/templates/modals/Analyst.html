@@ -64,7 +64,7 @@
                                 <div class="form-floating mb-3">
                                     <input class="form-control" id="coupleName"
                                            name="coupleName"
-                                           th:value="${creditRequestDTO.getCoupleName1() + creditRequestDTO.getCoupleName2()}"
+                                           th:value="${creditRequestDTO.getCoupleName1() + ' y '+ creditRequestDTO.getCoupleName2()}"
                                            readonly
                                            type="text">
                                     <label for="coupleName">Couple's Names:</label>
