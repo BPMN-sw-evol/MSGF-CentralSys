@@ -14,10 +14,7 @@ import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.*;
 
 @Service
@@ -237,6 +234,7 @@ public class CreditAnalystServices {
                     updateTaskByProcessId(processId, newTaskId);
                     setAssignee(newTaskId, "CreditCommittee");
                     updateReviewAndStatus(processId,"Evaluar crédito");
+                    updateCountReviewsBpm(processId);
                 }
                 return "";
             } catch (HttpClientErrorException e) {
@@ -269,38 +267,16 @@ public class CreditAnalystServices {
             requestBody.put("variables", variables);
             HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
 
-//            try (Connection connection = DriverManager.getConnection("jdbc:postgresql://rds-msgf.cyrlczakjihy.us-east-1.rds.amazonaws.com:5432/credit_request", "postgres", "msgfoundation")) {
-//                String camundaUrl = "http://localhost:9000/engine-rest/task/" + taskId + "/complete";
-//                restTemplate.postForEntity(camundaUrl, requestEntity, Map.class);
-//                String newTaskId = getTaskIdByProcessIdWithApi(processId);
-//
-//                if (newTaskId != null) {
-//                    // Update the "status" to "Draft" in the "CreditRequest" table
-//                    String updateStatusQuery = "UPDATE credit_request SET status = 'DRAFT', count_reviewcr = count_reviewcr + 1 WHERE process_id = ?";
-//                    try (PreparedStatement statement = connection.prepareStatement(updateStatusQuery)) {
-//                        statement.setString(1, processId);
-//                        updateTaskByProcessId(processId, newTaskId);
-//                        setAssignee(newTaskId, "MarriedCouple");
-//                    } catch (SQLException e) {
-//                        return null;
-//                    }
-//                }
-//                return "";
-//            } catch (SQLException | HttpClientErrorException e) {
-//                System.err.println("Error during task completion: " + e.getMessage());
-//                return null;
-//            }
-
             try {
                 String camundaUrl = "http://localhost:9000/engine-rest/task/" + taskId + "/complete";
                 updateReviewAndStatus(processId,"DRAFT");
+                updateCountReviewsBpm(processId);
                 restTemplate.postForEntity(camundaUrl, requestEntity, Map.class);
                 String newTaskId = getTaskIdByProcessIdWithApi(processId);
 
                 if (newTaskId != null) {
                     updateTaskByProcessId(processId, newTaskId);
                     setAssignee(newTaskId, "CreditAnalyst");
-                    //updateReviewAndStatus(processId,"DRAFT");
 
                 }
                 return "";
@@ -335,4 +311,91 @@ public class CreditAnalystServices {
             }
         }
     }
+    public void updateCountReviewsBpm(String processId) {
+        // Obtener el nuevo valor de countReviewsBpm desde la base de datos
+        long countReviewsBpm = getCountReviewsBpmFromDatabase(processId);
+
+        String camundaUrl = "http://localhost:9000/engine-rest/process-instance/" + processId + "/variables/countReviewsBpm";
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+
+        Map<String, Object> requestBody = new HashMap<>();
+        requestBody.put("value", countReviewsBpm);
+
+        HttpEntity<Map<String, Object>> requestEntity = new HttpEntity<>(requestBody, headers);
+
+        try {
+            ResponseEntity<Void> response = restTemplate.exchange(
+                    camundaUrl,
+                    HttpMethod.PUT,
+                    requestEntity,
+                    Void.class
+            );
+
+            if (response.getStatusCode().is2xxSuccessful()) {
+                System.out.println("countReviewsBpm updated successfully for processId: " + processId);
+            } else {
+                System.err.println("Error updating countReviewsBpm for processId " + processId + ". Status code: " + response.getStatusCode());
+            }
+        } catch (HttpClientErrorException e) {
+            String errorMessage = e.getResponseBodyAsString();
+            System.err.println("Error updating countReviewsBpm: " + errorMessage);
+        }
+    }
+
+
+    private long getCountReviewsBpmFromDatabase(String processId) {
+        long countReviewsBpm = 0;
+
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+
+        try {
+            // Conectar a la base de datos
+            connection = DriverManager.getConnection("jdbc:postgresql://localhost:5432/credit_request", "postgres", "admin");
+
+            // Consulta SQL para obtener countReviewsBpm
+            String query = "SELECT count_reviewcr FROM credit_request WHERE process_id = ?";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setString(1, processId);
+
+            // Ejecutar la consulta
+            resultSet = preparedStatement.executeQuery();
+
+            // Obtener el resultado
+            if (resultSet.next()) {
+                countReviewsBpm = resultSet.getLong("count_reviewcr");
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener countReviewsBpm desde la base de datos: " + e.getMessage());
+        } finally {
+            // Cerrar recursos
+            if (resultSet != null) {
+                try {
+                    resultSet.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (preparedStatement != null) {
+                try {
+                    preparedStatement.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+            if (connection != null) {
+                try {
+                    connection.close();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        return countReviewsBpm;
+    }
+
 }
